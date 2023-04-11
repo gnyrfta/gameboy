@@ -14,3 +14,17 @@ kind of different.
 Complex is an arduino library for Complex math. 
 In DEV_Config the baud rate is set to 115200 bit/second, so the serial monitor needs to be set to the same. 
 
+## Todo
+
+### Menu and fractal program
+- Make cursor faster.
+- Blank screen and delay for a second or so before launching fractal program, so the menu doesn't look like its 'eaten' from below.
+- Figure out why only the contours of the set are showing - why is the inside of the figure black instead of max colour?
+- Implement cursor in fractal program, so that you can escape the program.
+- Add more colours to the fractal program.
+
+### After that
+- Implement Filips 'Asteroids' game as a second item on the menu.
+
+### Whenever someone is inspired
+- Build (3D-print?) a holder for the screen. 
