@@ -22,6 +22,7 @@ In DEV_Config the baud rate is set to 115200 bit/second, so the serial monitor n
 - Figure out why only the contours of the set are showing - why is the inside of the figure black instead of max colour?
 - Implement cursor in fractal program, so that you can escape the program.
 - Add more colours to the fractal program.
+- Rotate 'Mandelbrot' text on menu to the same orientation as the fractal program.
 
 ### After that
 - Implement Filips 'Asteroids' game as a second item on the menu.
