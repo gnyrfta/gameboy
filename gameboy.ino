@@ -18,6 +18,8 @@ In DEV_Config the baud rate is set to 115200 bit/second, so the serial monitor n
 #include <ezButton.h>//necessary for reading pushdown on the button.
 #include "GUI_Paint.h"
 #include "LCD_Driver.h"
+#include <math.h>        // std::abs
+
 //#include "image.h
 //#include <SPI.h>
 
@@ -58,6 +60,8 @@ int command = COMMAND_NO;
   // put your setup code here, to run once:
 
    bool tryLoop{false};
+
+uint16_t changeThisLater[3];
 
 void setup() 
 {
@@ -142,10 +146,11 @@ uint16_t fun(Complex c, double xd, double yd) //Sets a color based on amount of 
     tempNextOriginY = yd;    
   }
   //Serial.println("hello");
-  arr[0] = (uint16_t)iter;
-  arr[1] = (uint16_t)iter;
+  arr[0] = (uint16_t)iter*53;
+  arr[1] = (uint16_t)iter*53;
   arr[2] = 0;
-  return convertToUWORD(arr[0],arr[1],arr[2]);
+  convertHSVtoRGB(iter*3);
+  return convertToUWORD(changeThisLater[0],changeThisLater[1],changeThisLater[2]);
 }
 
 uint16_t convertToUWORD(uint16_t red_value,uint16_t green_value,uint16_t blue_value) //Converts to a color format that Paint_setPixel understands.
@@ -219,7 +224,7 @@ void changeCursorValue()
   if (command & COMMAND_UP) {
     Serial.println("COMMAND UP");
     if(cursorY > 0)
-    {
+    {https://www.rapidtables.com/convert/color/hsv-to-rgb.html
     cursorY--; 
     }   
   }
@@ -232,4 +237,50 @@ void changeCursorValue()
     }
   }
 }
+ void convertHSVtoRGB(int H)
+  {
+    double X = 1-fabs(fmod(H/60,2)-1);
+    H = fmod(H,360);
+    
+    if(0<=H<60)
+    {
+      changeThisLater[0]= 1;
+      changeThisLater[1]=X;
+      changeThisLater[2]=0;
+    }
+    else if(60<=H<120)
+    {
+      changeThisLater[0]=X;
+      changeThisLater[1]=1;
+      changeThisLater[2]=0;
+    }
+    else if(120<=H<180)
+    {
+      changeThisLater[0]=0;
+      changeThisLater[1]=1;
+      changeThisLater[2]=X;
+    }
+    else if(180<=H<240)
+    {
+      changeThisLater[0]=0;
+      changeThisLater[1]=X;
+      changeThisLater[2]=1;
+    }
+    else if(240<=H<300)
+    {
+      changeThisLater[0]=X;
+      changeThisLater[1]=0;
+      changeThisLater[2]=1;
+    }
+    else if(300<=H<360)
+    {
+      changeThisLater[0]=1;
+      changeThisLater[1]=0;
+      changeThisLater[2]=X;
+    }
+    changeThisLater[0]=changeThisLater[0]*255;
+    changeThisLater[1]=changeThisLater[1]*255;
+    changeThisLater[2]=changeThisLater[2]*255;
+  }
+
 #endif
