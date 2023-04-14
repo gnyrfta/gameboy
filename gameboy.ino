@@ -24,13 +24,16 @@ In DEV_Config the baud rate is set to 115200 bit/second, so the serial monitor n
 //#include <SPI.h>
 
 using namespace std;
+
+//For mandelbrot, move to separate class: 
 double nextOriginX{0};//Used to find a starting place for next mandelbrot drawing that is along one of the borders.
 double tempNextOriginX{0};
 double nextOriginY{0};
 double tempNextOriginY{0};
 double scale{1};//Used to scale inwards in the fractal. 
+//
 
-//For joystick
+//For joystick - move to separate class.
 #define VRX_PIN  A0 // Arduino pin connected to VRX pin
 #define VRY_PIN  A1 // Arduino pin connected to VRY pin
 #define SW_PIN   2  // Arduino pin connected to SW  pin
@@ -54,11 +57,11 @@ int bValue = 0; // To store value of the button
 
 int command = COMMAND_NO;
 
-//end for Joystick
+//end for Joystick stuff that should be moved to separate class.
   int cursorX{0};
   int cursorY{0};
   // put your setup code here, to run once:
-
+//Try to figure out a way to avoid these three globals:
    bool tryLoop{false};
    bool tryLoop2{false};
 
@@ -95,10 +98,11 @@ void loop() //Presents the menu and if 'Mandelbrot' is clicked it starts drawing
   if (button.isPressed()) {
     Serial.println("The button is pressed");//If the button is pressed on the 'mandelbrot' text, launch the mandelbrot program. 
     Serial.print(cursorY);
-    if(30>cursorY>10)
+    if(30>cursorY)
     {
     Paint_DrawString_EN(30, 10, "Mandelbrot", &Font24, BLUE, WHITE);//Show that the button has been pressed. 
     delay(200);
+    tryLoop=true;
     } 
     else if(cursorY>30)
     {

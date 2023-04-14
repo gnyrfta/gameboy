@@ -1,0 +1,1 @@
+/*This file should contain code for mandelbrot program. */
