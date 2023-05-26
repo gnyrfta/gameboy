@@ -17,9 +17,9 @@ In DEV_Config the baud rate is set to 115200 bit/second, so the serial monitor n
 ## Todo
 
 ### Menu and fractal program
-- Make cursor faster.
+- [X] Make cursor faster. Did this, but later removed the cursor from the main menu. The trick is to only rewrite the pixels in the + where the cursor just was. Also, increments by 3 px instead of one per loop.
 - Blank screen and delay for a second or so before launching fractal program, so the menu doesn't look like its 'eaten' from below.
-- Figure out why only the contours of the set are showing - why is the inside of the figure black instead of max colour?
+- [X] Figure out why only the contours of the set are showing - why is the inside of the figure black instead of max colour?
 - Implement cursor in fractal program, so that you can escape the program.
 - Add more colours to the fractal program.
 - Rotate 'Mandelbrot' text on menu to the same orientation as the fractal program.
@@ -28,4 +28,4 @@ In DEV_Config the baud rate is set to 115200 bit/second, so the serial monitor n
 - Implement Filips 'Asteroids' game as a second item on the menu.
 
 ### Whenever someone is inspired
-- Build (3D-print?) a holder for the screen. 
+- Build (3D-print?) a holder for the screen. Or use a shoebox.
