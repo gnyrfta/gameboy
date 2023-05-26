@@ -41,13 +41,8 @@ void setup()
 {
   Config_Init();
   LCD_Init();
-  LCD_Clear(0xffff);
-  Paint_NewImage(LCD_WIDTH, LCD_HEIGHT, 0, WHITE);
-  Paint_Clear(WHITE);
-
   joyStickInit();
-  Paint_DrawString_EN(30, 10, "Mandelbrot", &Font24, WHITE, BLACK);
-  Paint_DrawString_EN(30,30, "Gradient", &Font24, WHITE, BLACK);
+  drawStartMenu();
 }
 
 void loop() //Presents the menu and if 'Mandelbrot' is clicked it starts drawing the Mandelbrot set. 
@@ -117,14 +112,27 @@ void loop() //Presents the menu and if 'Mandelbrot' is clicked it starts drawing
   }
   if(drawMandelbrot)
   {
+    LCD_Clear(0xffff);
+    Paint_NewImage(LCD_WIDTH, LCD_HEIGHT, 0, WHITE);
+    Paint_Clear(WHITE);
+    delay(500);
     runMandelbrot();
+    drawMandelbrot = false;// When exiting program it is set to false.
+    delay(500);//Delay to allow button state to return to not pressed.
+    readJoyStickButton();
+    drawStartMenu();
   }
   if(drawGradient)
   {
     HSVCycle();
   }
 }
-
-
-
+void drawStartMenu()
+{
+  LCD_Clear(0xffff);
+  Paint_NewImage(LCD_WIDTH, LCD_HEIGHT, 0, WHITE);
+  Paint_Clear(WHITE);
+  Paint_DrawString_EN(30, 10, "Mandelbrot", &Font24, WHITE, BLACK);
+  Paint_DrawString_EN(30,30, "Gradient", &Font24, WHITE, BLACK);
+}
 #endif

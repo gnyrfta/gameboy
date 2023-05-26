@@ -18,9 +18,9 @@ In DEV_Config the baud rate is set to 115200 bit/second, so the serial monitor n
 
 ### Menu and fractal program
 - [X] Make cursor faster. Did this, but later removed the cursor from the main menu. The trick is to only rewrite the pixels in the + where the cursor just was. Also, increments by 3 px instead of one per loop.
-- Blank screen and delay for a second or so before launching fractal program, so the menu doesn't look like its 'eaten' from below.
+- [X] Blank screen and delay for a second or so before launching fractal program, so the menu doesn't look like its 'eaten' from below.
 - [X] Figure out why only the contours of the set are showing - why is the inside of the figure black instead of max colour?
-- Implement cursor in fractal program, so that you can escape the program.
+- [X] Possible to escape fractal program by pressing button.
 - Add more colours to the fractal program. :art:
 
 ### After that

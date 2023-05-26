@@ -2,6 +2,7 @@
 
 #include "mandelbrot.h"
 #include "colourconversions.h"
+#include "joystick.h"
 
 
 double nextOriginX{0};//Used to find a starting place for next mandelbrot drawing that is along one of the borders.
@@ -13,9 +14,10 @@ double scale{1};//Used to scale inwards in the fractal.
 uint16_t fun(Complex c, double xd, double yd);
 int iterations(Complex c);
 void mandelbrot(double nextOriginX, double nextOriginY, double scale);
+bool runProgram{true};
 
 void runMandelbrot(){
-  while(true)
+  while(runProgram)
    {
     mandelbrot(nextOriginX,nextOriginY,scale);
     nextOriginX=tempNextOriginX;
@@ -25,6 +27,7 @@ void runMandelbrot(){
 }
 void mandelbrot(double nextOriginX, double nextOriginY,double scale) 
 {
+  Serial.println("in mandelbrot");
   for(uint16_t x = 0; x<240;x++)
   {
     for(uint16_t y=0;y<320;y++)
@@ -38,8 +41,20 @@ void mandelbrot(double nextOriginX, double nextOriginY,double scale)
       yd = yd + nextOriginY;
       yd = yd/scale;
       Complex c(xd,yd);
-      //Serial.print(c);
       Paint_SetPixel(x,y,fun(c,xd,yd));//This function works and 'convertToUWORD' works.
+      int bvalue = readJoyStickButton();
+      Serial.print("bvalue");
+      Serial.print(bvalue);
+      if(buttonPressed())
+      {
+        if(x>2)
+        {
+          Serial.print("button pressed");
+          x = 1000;
+          y= 1000;
+          runProgram = false;
+        }
+      }
     }
 
   }
