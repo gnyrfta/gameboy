@@ -24,9 +24,11 @@ In DEV_Config the baud rate is set to 115200 bit/second, so the serial monitor n
 - Add more colours to the fractal program. :art:
 
 ### After that
-- Implement an 'etch a sketch' as the next item on the menu.
+- [X] Implement an 'etch a sketch' as the next item on the menu.
+- [ ] Figure out a good way to exit the etchasketch.
 - Implement Filips 'Asteroids' game as the fourth item on the menu.
 :milky_way:
 ### Whenever someone is inspired
 - Build (3D-print?) a holder for the screen. Or use a shoebox.
-- Screensaver using some of the cool pixel art from that person I follow on Mastodon, if its gpl or so.
+- Screensaver using some of the cool pixel art from that person I follow on Mastodon, if its gpl or so. Thats probably not going to work, since the arduino can't store more than one 70x70 px picture. No memory.
+Maybe with an external SD-card. 

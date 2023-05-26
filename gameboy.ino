@@ -36,6 +36,7 @@ int cursorYOld{0};
 
 bool drawMandelbrot{false};
 bool drawGradient{false};
+bool etchASketch{false};
 
 void setup() 
 {
@@ -58,50 +59,72 @@ void loop() //Presents the menu and if 'Mandelbrot' is clicked it starts drawing
   cursorY = changeCursorYValue(cursorY);
   bValue = readJoyStickButton();  //bvalue not used currently.
 
-  if (buttonPressed()) {
+  if (buttonPressed()) 
+  {
     if(30>cursorY)
     {
-    Paint_DrawString_EN(30, 10, "Mandelbrot", &Font24, BLUE, WHITE);//Show that the button has been pressed. 
-    delay(200);
-    drawMandelbrot=true;
+      Paint_DrawString_EN(30, 10, "Mandelbrot", &Font24, BLUE, WHITE);//Show that the button has been pressed. 
+      delay(200);
+      drawMandelbrot=true;
     } 
-    else if(cursorY>30)
+    else if((cursorY>30) && (cursorY<50))
     {
+      Paint_DrawString_EN(30,30, "Gradient", &Font24, BLUE, WHITE);
+      delay(200);
       drawGradient=true;
     }
+    else if((cursorY>50) && (cursorY<70))
+    {
+      Paint_DrawString_EN(10,50, "Etch a Sketch", &Font24, BLUE, WHITE);
+      delay(500);
+      etchASketch=true;
+    }
+    
   }
+  /*
   if (buttonReleased()) {
-    if(30>cursorY>10)
+    if((cursorY>30) && (cursorY<50))
     {
-    Paint_DrawString_EN(30, 10, "Mandelbrot", &Font24, WHITE, BLACK);
-    drawMandelbrot=true; //Launch Mandelbrot program. 
+      Paint_DrawString_EN(30, 10, "Mandelbrot", &Font24, WHITE, BLACK);
     }
-    else if(60>cursorY>30)
+    else if((cursorY>30) && (cursorY<50))
     {
-      drawGradient=true;
+      Paint_DrawString_EN(30, 30, "Gradient", &Font24, WHITE, BLACK);
+    }
+    else if((cursorY>50) && (cursorY<70))
+    {
+      Paint_DrawString_EN(10, 50, "Etch a Sketch", &Font24, WHITE, BLACK);
     }
 
   }
+  */
   if(!(cursorX==cursorXOld && cursorY==cursorYOld)) // If the cursor has moved.
   {
      if((30>cursorY) && (cursorY>10))
      {
        if(!((30>cursorYOld) && (cursorYOld>10)))
         {
-          Serial.println("redrawing");
           Paint_DrawString_EN(30, 10, "Mandelbrot", &Font24, WHITE, BLUE);
           Paint_DrawString_EN(30,30, "Gradient", &Font24, WHITE, BLACK);
-
+          Paint_DrawString_EN(10,50,"Etch a sketch", &Font24, WHITE, BLACK);
         }
      }
-     else if((60>cursorY) && (cursorY>30))
+     else if((50>cursorY) && (cursorY>30))
      {
-      if(!((60>cursorYOld) && (cursorYOld>30)))
+      if(!((50>cursorYOld) && (cursorYOld>30)))
       {
-        Serial.println("redrawing");
-        Paint_DrawString_EN(30,30, "Gradient", &Font24, WHITE, BLUE);
         Paint_DrawString_EN(30, 10, "Mandelbrot", &Font24, WHITE, BLACK);
-
+        Paint_DrawString_EN(30,30, "Gradient", &Font24, WHITE, BLUE);
+        Paint_DrawString_EN(10,50,"Etch a sketch", &Font24, WHITE, BLACK);
+      }
+     }
+      else if((70>cursorY) && (cursorY>50))
+     {
+      if(!((70>cursorYOld) && (cursorYOld>50)))
+      {
+        Paint_DrawString_EN(30, 10, "Mandelbrot", &Font24, WHITE, BLACK);
+        Paint_DrawString_EN(30,30, "Gradient", &Font24, WHITE, BLACK);
+        Paint_DrawString_EN(10,50,"Etch a sketch", &Font24, WHITE, BLUE);
       }
      }
      else
@@ -124,7 +147,46 @@ void loop() //Presents the menu and if 'Mandelbrot' is clicked it starts drawing
   }
   if(drawGradient)
   {
+    LCD_Clear(0xffff);
+    Paint_NewImage(LCD_WIDTH, LCD_HEIGHT, 0, WHITE);
+    Paint_Clear(WHITE);
+    delay(500);
     HSVCycle();
+    drawGradient = false;
+    delay(500);
+    readJoyStickButton();
+    drawStartMenu();
+  }
+  if(etchASketch)
+  {
+    bool runEtchASketch{true};
+    LCD_Clear(0xffff);
+    Paint_NewImage(LCD_WIDTH, LCD_HEIGHT, 0, WHITE);
+    Paint_Clear(WHITE);
+    delay(1000);
+    while(runEtchASketch)
+    {
+      resetCommand();//resets the joystick command variable to zero.
+      xValue = readJoyStickX();//reads the potentiometer value from the joystick in the x-direction and gives it as an int.
+      yValue = readJoyStickY();//reads the potentiometer value from the joystick in the y-direction and gives it as an int.
+      setCommand(xValue,yValue);//Sets command to left,right, up or down.
+
+      cursorXOld = cursorX; //Used to overwrite former cursor position. 
+      cursorYOld = cursorY;
+      cursorX = changeCursorXValue(cursorX);//Increments x or y-value of cursor according to 'command'. 
+      cursorY = changeCursorYValue(cursorY);
+      bValue = readJoyStickButton();  //bvalue not used currently.
+      Paint_DrawString_EN(cursorX, cursorY, ".", &Font24, WHITE, BLACK);
+      if(false)
+      {
+        runEtchASketch = false;
+        etchASketch = false;
+        delay(500);
+        readJoyStickButton();
+        drawStartMenu();
+      }      
+    }
+
   }
 }
 void drawStartMenu()
@@ -134,5 +196,6 @@ void drawStartMenu()
   Paint_Clear(WHITE);
   Paint_DrawString_EN(30, 10, "Mandelbrot", &Font24, WHITE, BLACK);
   Paint_DrawString_EN(30,30, "Gradient", &Font24, WHITE, BLACK);
+  Paint_DrawString_EN(10,50,"Etch a sketch", &Font24, WHITE, BLACK);
 }
 #endif

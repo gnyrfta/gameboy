@@ -43,8 +43,6 @@ void mandelbrot(double nextOriginX, double nextOriginY,double scale)
       Complex c(xd,yd);
       Paint_SetPixel(x,y,fun(c,xd,yd));//This function works and 'convertToUWORD' works.
       int bvalue = readJoyStickButton();
-      Serial.print("bvalue");
-      Serial.print(bvalue);
       if(buttonPressed())
       {
         if(x>2)
