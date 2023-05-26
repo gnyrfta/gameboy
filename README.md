@@ -21,11 +21,11 @@ In DEV_Config the baud rate is set to 115200 bit/second, so the serial monitor n
 - Blank screen and delay for a second or so before launching fractal program, so the menu doesn't look like its 'eaten' from below.
 - [X] Figure out why only the contours of the set are showing - why is the inside of the figure black instead of max colour?
 - Implement cursor in fractal program, so that you can escape the program.
-- Add more colours to the fractal program.
+- Add more colours to the fractal program. :art:
 - Rotate 'Mandelbrot' text on menu to the same orientation as the fractal program.
 
 ### After that
 - Implement Filips 'Asteroids' game as a second item on the menu.
-
+:milky_way;
 ### Whenever someone is inspired
 - Build (3D-print?) a holder for the screen. Or use a shoebox.
