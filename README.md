@@ -26,6 +26,6 @@ In DEV_Config the baud rate is set to 115200 bit/second, so the serial monitor n
 
 ### After that
 - Implement Filips 'Asteroids' game as a second item on the menu.
-:milky_way;
+:milky_way:
 ### Whenever someone is inspired
 - Build (3D-print?) a holder for the screen. Or use a shoebox.
