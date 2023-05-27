@@ -22,6 +22,7 @@ In DEV_Config the baud rate is set to 115200 bit/second, so the serial monitor n
 #include "gradient.h"
 #include "colourconversions.h"
 #include "joystick.h"
+#include "etchasketch.h"
 
 using namespace std;
 
@@ -164,29 +165,11 @@ void loop() //Presents the menu and if 'Mandelbrot' is clicked it starts drawing
     Paint_NewImage(LCD_WIDTH, LCD_HEIGHT, 0, WHITE);
     Paint_Clear(WHITE);
     delay(1000);
-    while(runEtchASketch)
-    {
-      resetCommand();//resets the joystick command variable to zero.
-      xValue = readJoyStickX();//reads the potentiometer value from the joystick in the x-direction and gives it as an int.
-      yValue = readJoyStickY();//reads the potentiometer value from the joystick in the y-direction and gives it as an int.
-      setCommand(xValue,yValue);//Sets command to left,right, up or down.
-
-      cursorXOld = cursorX; //Used to overwrite former cursor position. 
-      cursorYOld = cursorY;
-      cursorX = changeCursorXValue(cursorX);//Increments x or y-value of cursor according to 'command'. 
-      cursorY = changeCursorYValue(cursorY);
-      bValue = readJoyStickButton();  //bvalue not used currently.
-      Paint_DrawString_EN(cursorX, cursorY, ".", &Font24, WHITE, BLACK);
-      if(false)
-      {
-        runEtchASketch = false;
-        etchASketch = false;
-        delay(500);
-        readJoyStickButton();
-        drawStartMenu();
-      }      
-    }
-
+    runEtchASketchProgram();
+    etchASketch = false;
+    delay(500);
+    readJoyStickButton();
+    drawStartMenu();
   }
 }
 void drawStartMenu()

@@ -18,7 +18,7 @@ using namespace std;
 #define COMMAND_DOWN   0x08
 
 ezButton button(SW_PIN);//Necessary for registering pushdown-state. 
-
+int cursorSpeed{3};
 
 
 int command = COMMAND_NO;
@@ -44,7 +44,7 @@ int changeCursorXValue(int cursorX)
    // Serial.println("COMMAND LEFT");
     if(cursorX > 0 )
     {
-    cursorX-=3;
+    cursorX-=cursorSpeed;
     }
   }
 
@@ -52,7 +52,7 @@ int changeCursorXValue(int cursorX)
     //Serial.println("COMMAND RIGHT");
     if(cursorX < 240)
     {
-    cursorX+=3;
+    cursorX+=cursorSpeed;
     }
   }
   return cursorX;
@@ -63,7 +63,7 @@ int changeCursorYValue(int cursorY)
     //Serial.println("COMMAND UP");
     if(cursorY > 0)
     {        
-    cursorY-=3; 
+    cursorY-=cursorSpeed; 
     }   
   }
 
@@ -71,7 +71,7 @@ int changeCursorYValue(int cursorY)
     //Serial.println("COMMAND DOWN");
     if(cursorY < 320)
     {
-    cursorY+=3;
+    cursorY+=cursorSpeed;
     }
   }
   return cursorY;
@@ -101,4 +101,8 @@ int readJoyStickY()
 void resetCommand()
 {
   command = COMMAND_NO; //resets commands
+}
+void setCursorSpeed(int speed)
+{
+  cursorSpeed = speed;
 }

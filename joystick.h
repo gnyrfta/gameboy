@@ -11,5 +11,6 @@ bool buttonReleased();
 int readJoyStickX();
 int readJoyStickY();
 void resetCommand();
+void setCursorSpeed(int speed);
 
 #endif

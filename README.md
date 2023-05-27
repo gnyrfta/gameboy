@@ -25,7 +25,7 @@ In DEV_Config the baud rate is set to 115200 bit/second, so the serial monitor n
 
 ### After that
 - [X] Implement an 'etch a sketch' as the next item on the menu.
-- [ ] Figure out a good way to exit the etchasketch.
+- [X] Figure out a good way to exit the etchasketch.
 - Implement Filips 'Asteroids' game as the fourth item on the menu.
 :milky_way:
 ### Whenever someone is inspired
