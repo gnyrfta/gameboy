@@ -159,7 +159,7 @@ void loop() //Presents the menu and if 'Mandelbrot' is clicked it starts drawing
   }
   if(etchASketch)
   {
-    bool runEtchASketch{true};
+    //bool runEtchASketch{true};
     LCD_Clear(0xffff);
     Paint_NewImage(LCD_WIDTH, LCD_HEIGHT, 0, WHITE);
     Paint_Clear(WHITE);

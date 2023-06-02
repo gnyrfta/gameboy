@@ -29,7 +29,7 @@ In DEV_Config the baud rate is set to 115200 bit/second, so the serial monitor n
 - [ ] Implement Pong
   - [ ] Randomize ball direction after impact
   - [ ] Add Scorekeeper
-  - [ ] Add second padel
+  - [X] Add second padel
   - [ ] Optimize ball speed and padel speed.
   - [ ] Add high score
   - [ ] Add escape button.

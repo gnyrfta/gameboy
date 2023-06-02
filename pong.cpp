@@ -27,9 +27,7 @@ int background = WHITE;
 
 int yValuePong = 140;
 int xValuePong = 0; 
-int cursorXPong = 0;
-int cursorYPong =0;
-int cursorXOldPong = 0;
+int cursorYPong = 0;
 int cursorYOldPong = 0;
 
 
@@ -44,16 +42,23 @@ void drawPadelTwo(int yPosition);
 void runPong()
 {
   int x_center_old = x_center;
+  int storeValueCursorYRightPadel=padelTwoYstart;
+  int storeValueCursorYLeftPadel=padelTwoXstart;
+
   while(runProgramPong){
     if((x_center >= 232) && (y_center >= cursorYPong) && (y_center <=cursorYPong + 20))
     {
       travellingRight = false;
       travellingLeft = true;
+      storeValueCursorYRightPadel = cursorYPong;
+      cursorYPong = storeValueCursorYLeftPadel;
     }
     else if((x_center <=2) && (travellingLeft))
     {
       travellingRight = true;
       travellingLeft = false;
+      storeValueCursorYLeftPadel = cursorYPong;
+      cursorYPong = storeValueCursorYRightPadel;
     }
     if(travellingRight)
     {
@@ -71,19 +76,34 @@ void runPong()
 
     resetCommand();//resets the joystick command variable to zero.
     yValuePong = readJoyStickY();//reads the potentiometer value from the joystick in the y-direction and gives it as an int.
-    xValuePong = readJoyStickX();
     setCommand(xValuePong,yValuePong);//Sets command to left,right, up or down.
-    cursorXOldPong = cursorXPong; //Used to overwrite former cursor position. Not used in etchaSketch, but necessary if you would want the cursor to be a cursor sometime.
     cursorYOldPong = cursorYPong;
-    cursorXPong = changeCursorXValue(cursorXPong);//Increments x or y-value of cursor according to 'command'. 
     cursorYPong = changeCursorYValue(cursorYPong);
-    drawPadelTwo(cursorYPong);
-  }
+    if(travellingLeft)
+    {
+      drawPadelOne(cursorYPong);
+    } 
+    if(travellingRight)
+    {
+      drawPadelTwo(cursorYPong);
+    }
+  }    
+  
 }
 void drawPadelOne(int yPosition)
 {
-  //first time, draw full rectangle, then only redraw pixels on bottom and top. 
-  Paint_DrawRectangle(padelOneXstart, padelOneYstart, padelOneXend, padelOneYend, padelColour, line_width, draw_fill);
+  if(yPosition > cursorYOldPong)
+  {
+    Paint_DrawRectangle(padelOneXstart, cursorYOldPong, padelOneXend, yPosition, background, line_width, draw_fill);
+    Paint_DrawRectangle(padelOneXstart, yPosition, padelOneXend, yPosition + 20, padelColour, line_width, draw_fill);
+    Serial.println("should have been drawn.");
+  }
+  else if(yPosition <= cursorYOldPong)
+  {
+    Paint_DrawRectangle(padelOneXstart,yPosition + 20, padelOneXend,  cursorYOldPong + 20, background, line_width, draw_fill);
+    Paint_DrawRectangle(padelOneXstart, yPosition, padelOneXend, yPosition + 20, padelColour, line_width, draw_fill); 
+    Serial.println("should have been drawn 2.");   
+  }
 }
 void drawPadelTwo(int yPosition)
 {
