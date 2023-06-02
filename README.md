@@ -26,6 +26,13 @@ In DEV_Config the baud rate is set to 115200 bit/second, so the serial monitor n
 ### After that
 - [X] Implement an 'etch a sketch' as the next item on the menu.
 - [X] Figure out a good way to exit the etchasketch.
+- [ ] Implement Pong
+  - [ ] Randomize ball direction after impact
+  - [ ] Add Scorekeeper
+  - [ ] Add second padel
+  - [ ] Optimize ball speed and padel speed.
+  - [ ] Add high score
+  - [ ] Add escape button.
 - Implement Filips 'Asteroids' game as the fourth item on the menu.
 :milky_way:
 ### Whenever someone is inspired
