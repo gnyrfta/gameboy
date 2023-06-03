@@ -30,9 +30,11 @@ In DEV_Config the baud rate is set to 115200 bit/second, so the serial monitor n
   - [ ] Randomize ball direction after impact
   - [ ] Add Scorekeeper
   - [X] Add second padel
-  - [ ] Optimize ball speed and padel speed.
+  - [ ] Optimize ball speed and padel speed. Redraw only top and bottom pixels of rectangle. Make rectangle thinner.
   - [ ] Add high score
   - [ ] Add escape button.
+  - [ ] Increase ball size.
+  - [ ] Fix bug where there are two padels on one side when moving below the middle. Disappears when returning past middle. 
 - Implement Filips 'Asteroids' game as the fourth item on the menu.
 :milky_way:
 ### Whenever someone is inspired

@@ -2,19 +2,21 @@
 #include "LCD_Driver.h"
 #include "joystick.h"
 
-
+// Ball values
 int x_center = 120;
 int y_center = 160;
 int radius = 1;
 int ball_colour = BLACK;
+
+//Used for all shapes:
 int line_width = DOT_PIXEL_DFT;
 int draw_fill = DOT_FILL_AROUND;
 
+//Padel values
 int padelOneXstart = 0;
 int padelOneXend = 8;
 int padelOneYstart = 140;
 int padelOneYend = 180;
-
 
 int padelTwoXstart = 232;
 int padelTwoXend = 240;
@@ -25,16 +27,15 @@ int padelColour = BLACK;
 
 int background = WHITE;
 
-int yValuePong = 140;
-int xValuePong = 0; 
-int cursorYPong = 0;
-int cursorYOldPong = 0;
-
-
-bool runProgramPong = true;
+int yValuePong = 0;//reads the potentiometer value from the joystick in the y-direction.
+int xValuePong = 0; //reads the potentiometer value from the joystick in the x-direction. Only used because joystick function wants both x and y values.
+int cursorYPong = 0; //Position of cursor in the y-direction.
+int cursorYOldPong = 0;//Previous position of cursor in the y-direction.
 
 bool travellingRight{true};
 bool travellingLeft{false};
+
+bool runProgramPong = true;
 
 void drawPadelOne(int yPosition);
 void drawPadelTwo(int yPosition);
@@ -42,23 +43,23 @@ void drawPadelTwo(int yPosition);
 void runPong()
 {
   int x_center_old = x_center;
-  int storeValueCursorYRightPadel=padelTwoYstart;
-  int storeValueCursorYLeftPadel=padelTwoXstart;
+  int storeValueRightPadel=padelTwoYstart;
+  int storeValueLeftPadel=padelTwoXstart;
 
   while(runProgramPong){
     if((x_center >= 232) && (y_center >= cursorYPong) && (y_center <=cursorYPong + 20))
     {
       travellingRight = false;
       travellingLeft = true;
-      storeValueCursorYRightPadel = cursorYPong;
-      cursorYPong = storeValueCursorYLeftPadel;
+      storeValueRightPadel = cursorYPong;
+      cursorYPong = storeValueLeftPadel;
     }
     else if((x_center <=2) && (travellingLeft))
     {
       travellingRight = true;
       travellingLeft = false;
-      storeValueCursorYLeftPadel = cursorYPong;
-      cursorYPong = storeValueCursorYRightPadel;
+      storeValueLeftPadel = cursorYPong;
+      cursorYPong = storeValueRightPadel;
     }
     if(travellingRight)
     {
