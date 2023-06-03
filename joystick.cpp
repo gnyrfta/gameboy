@@ -74,8 +74,6 @@ int changeCursorYValue(int cursorY)
     cursorY+=cursorSpeed;
     }
   }
-  Serial.println("cursor y: ");
-  Serial.print(cursorY);
   return cursorY;
 }
 int readJoyStickButton()

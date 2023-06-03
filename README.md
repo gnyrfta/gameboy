@@ -27,14 +27,15 @@ In DEV_Config the baud rate is set to 115200 bit/second, so the serial monitor n
 - [X] Implement an 'etch a sketch' as the next item on the menu.
 - [X] Figure out a good way to exit the etchasketch.
 - [ ] Implement Pong
-  - [ ] Randomize ball direction after impact
+  - [X] Make ball direction after impact depend on where on the padel it hit.
   - [ ] Add Scorekeeper
   - [X] Add second padel
   - [ ] Optimize ball speed and padel speed. Redraw only top and bottom pixels of rectangle. Make rectangle thinner.
   - [ ] Add high score
   - [ ] Add escape button.
-  - [ ] Increase ball size.
-  - [ ] Fix bug where there are two padels on one side when moving below the middle. Disappears when returning past middle. 
+  - [X] Increase ball size.
+  - [ ] Fix bug where there are two padels on one side when moving below the middle. Disappears when returning past middle.
+  
 - Implement Filips 'Asteroids' game as the fourth item on the menu.
 :milky_way:
 ### Whenever someone is inspired
