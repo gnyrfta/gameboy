@@ -3,6 +3,7 @@
 //Don't refill after cursor has passed.
 #include "joystick.h"
 #include "GUI_Paint.h"
+#include "gameplaymenu.h"
 
 bool runEtchASketch{true};
 int xValueEtch{0};
@@ -19,6 +20,9 @@ void runEtchASketchProgram()
 {
   drawMenu();
   setCursorSpeed(1);
+  cursorXEtch =0 ;
+  cursorYEtch = 0;
+  runEtchASketch = true;
   while(runEtchASketch)
     {
       delay(10);//cursor is fast and hard to control otherwise.
@@ -54,21 +58,45 @@ void runEtchASketchProgram()
       }     
       if((cursorYEtch > 282))
       {
-        Paint_DrawString_EN(10, 290, "Quit", &Font24, WHITE, BLUE);     
-        if(buttonPressed())
+        if(cursorXEtch < 90)
         {
-        runEtchASketch = false;
+          //Paint_DrawString_EN(10, 290, "Quit", &Font24, WHITE, BLUE);
+          highlightQuit(true);              
+          if(buttonPressed())
+          {
+          runEtchASketch = false;
+          }
+        }
+        if((cursorXEtch > 90) && (cursorXOldEtch <= 90))
+        {
+          highlightQuit(false);
+        }
+        if(cursorXEtch > 90)
+        {
+          highlightReplay(true);
+          if(buttonPressed())
+          {
+          cursorXEtch = 0;
+          cursorYEtch = 0;
+          drawMenu();
+          }
+        }
+        if((cursorXEtch < 90) && (cursorXOldEtch >= 90))
+        {
+          highlightReplay(false);
         }
       }
       if((cursorYEtch < 282) && (cursorYOldEtch >= 282))
       {
-        Paint_DrawString_EN(10, 290, "Quit", &Font24, WHITE, BLACK); 
+        highlightQuit(false);
+        highlightReplay(false);
+        //Paint_DrawString_EN(10, 290, "Quit", &Font24, WHITE, BLACK); 
       }      
     }
 }
 
-void drawMenu()
+/*void drawMenu()
 {
   Paint_DrawLine(0, 280, 240, 280, BLACK, 2, LINE_STYLE_SOLID);
   Paint_DrawString_EN(10, 290, "Quit", &Font24, WHITE, BLACK); 
-}
+}*/
