@@ -37,7 +37,7 @@ In DEV_Config the baud rate is set to 115200 bit/second, so the serial monitor n
   - [X] Fix bug where there are two padels on one side when moving below the middle. Disappears when returning past middle.
   - [X] Fix collision logic, it bounces off nothing sometimes now. Seems to be fixed. Will reopen if reappears. 
   - [X] Put type conversion into a separate file. 2
-  - [X] Create a better way to quit or restart Pong. When game over, two options selectable by up/down on joystick.
+  - [ ] Create a better way to quit or restart Pong. When game over, two options selectable by up/down on joystick.
   
 - Implement Filips 'Asteroids' game as the fourth item on the menu.
 :milky_way:
