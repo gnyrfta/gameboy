@@ -3,6 +3,7 @@
 #include "joystick.h"
 #include <math.h>
 
+using namespace std;
 // Ball values
 int x_center = 120;
 int y_center = 160;
@@ -46,30 +47,82 @@ int determineAngle(int yBall, int yPadel);
 void moveBallLeft(int angle);
 void moveBallRight(int angle);
 
+char* toString(int number);
+char numeralsToString(int numeral);
+
 void runPong()
 {
+  runProgramPong=true;
+  travellingRight=true;
+  travellingLeft=false;
+  y_center=160;
+  x_center=0;
   int x_center_old = x_center;
   int y_center_old = y_center;
   int storeValueRightPadel=padelTwoYstart;
   int storeValueLeftPadel=padelTwoXstart;
   int angle{0};
 
+  int score =0;
+  const char * dude = toString(39);
+  Serial.print("this is ");
+  Serial.print(dude);
+
+
+
+
   drawStartPosition(padelOneYstart);
   while(runProgramPong){
-    if((x_center >= 232) && (y_center >= cursorYPong) && (y_center <=cursorYPong + 20)) //collision right padel
+    if(x_center >= 232 ) //collision right padel
     {
+      if((y_center >= cursorYPong) && (y_center <=cursorYPong + 20))
+      {
+      Serial.println("Collision!");
+      Serial.println(y_center);
+      Serial.println(cursorYPong);
       travellingRight = false;
       travellingLeft = true;
       storeValueRightPadel = cursorYPong;
       cursorYPong = storeValueLeftPadel;
       angle = determineAngle(y_center, cursorYPong);
+      score++;
+      }
+      else if(travellingRight)
+      {
+        Paint_DrawString_EN(30, 10, "Game Over", &Font24, WHITE, BLACK);
+        Paint_DrawString_EN(30, 30, "Score: ", &Font24, WHITE, BLACK);
+        Paint_DrawString_EN(140, 30, toString(score), &Font24, WHITE, BLACK);
+
+        delay(3000);
+        runProgramPong = false;
+      }
     }
-    else if((x_center <=2) && (y_center >= cursorYPong) && (y_center <=cursorYPong + 20))
+    else if(x_center <=4)//collision left padel
     {
+      if((y_center >= cursorYPong) && (y_center <=cursorYPong + 20))
+      {
       travellingRight = true;
       travellingLeft = false;
       storeValueLeftPadel = cursorYPong;
       cursorYPong = storeValueRightPadel;
+      Serial.println("Collision!");
+      Serial.println(y_center);
+      Serial.println(cursorYPong);
+      score++;
+      }
+      else if(travellingLeft)
+      {
+        
+        Paint_DrawString_EN(30, 10, "Game Over", &Font24, WHITE, BLACK);
+        Paint_DrawString_EN(30, 30, "Score: ", &Font24, WHITE, BLACK);
+        Paint_DrawString_EN(140, 30, toString(score), &Font24, WHITE, BLACK);
+        delay(3000);
+        runProgramPong = false;
+      }
+    }
+    else
+    {
+      //Serial.println("There should not have been a collision.");
     }
     if((y_center<=2)||(y_center>=318))
     {
@@ -256,3 +309,79 @@ void moveBallRight(int angle)
     y_center+=2;
   }
 }
+char* toString(int number)
+{
+  /*Handles numbers up to 999*/
+  int hundred = number/100;
+  Serial.println("Should be 0.");
+  Serial.println(hundred);
+  int temp = number - hundred*100;
+  Serial.println("temp:");
+  Serial.println(temp);
+  int ten = temp/10;
+  int one = temp - ten*10;
+  Serial.println("hundred: ");
+  Serial.println(hundred);
+  Serial.println("ten: ");
+  Serial.println(ten);
+  Serial.println("one: ");
+  Serial.println(one);
+
+  static char returnValue[4];
+
+  returnValue[0]=numeralsToString(hundred);
+  returnValue[1]=numeralsToString(ten);
+  returnValue[2]=numeralsToString(one);
+  returnValue[3]='\0';//char arrays in c++ need to be null-terminated. Which is something I don't understand, but oh well. Without it there is a square rectangle outputed. 
+  return returnValue;
+}
+char numeralsToString(int numeral)
+{
+
+  char returnChar;
+  if(numeral == 0)
+  {
+    returnChar = '0';
+  } 
+  else if(numeral == 1)
+  {
+    returnChar = '1';
+  }
+  else if(numeral == 2)
+  {
+    returnChar = '2';
+  }
+  else if(numeral == 3)
+  { 
+    returnChar = '3';
+  } 
+  else if(numeral == 4)
+  {
+    returnChar = '4';
+  }
+  else if(numeral == 5)
+  {
+    returnChar = '5';
+  }
+  else if(numeral == 6)
+  {
+    returnChar = '6';
+  }
+  else if(numeral == 7)
+  {
+    returnChar = '7';
+  } 
+  else if(numeral == 8)
+  {
+    returnChar = '8';
+  }
+  else if(numeral == 9)
+  {
+    returnChar = '9';
+  }
+  else
+  {
+    returnChar = ' ';
+  }
+  return returnChar;
+} 

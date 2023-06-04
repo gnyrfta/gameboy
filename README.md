@@ -28,13 +28,16 @@ In DEV_Config the baud rate is set to 115200 bit/second, so the serial monitor n
 - [X] Figure out a good way to exit the etchasketch.
 - [ ] Implement Pong
   - [X] Make ball direction after impact depend on where on the padel it hit.
-  - [ ] Add Scorekeeper
+  - [X] Add score at end of game.
   - [X] Add second padel
-  - [ ] Optimize ball speed and padel speed. Redraw only top and bottom pixels of rectangle. Make rectangle thinner.
-  - [ ] Add high score
-  - [ ] Add escape button.
+  - [X] Optimize ball speed and padel speed. Redraw only top and bottom pixels of rectangle. Make rectangle thinner. Could be optimized more. 
+  - [ ] Add high score. Is there any way to store this between restarts in Arduino? 
+  - [ ] Add escape button. 1 
   - [X] Increase ball size.
   - [ ] Fix bug where there are two padels on one side when moving below the middle. Disappears when returning past middle.
+  - [X] Fix collision logic, it bounces off nothing sometimes now. Seems to be fixed. Will reopen if reappears. 
+  - [ ] Put type conversion into a separate file. 2
+  - [ ] Clean up code. 3
   
 - Implement Filips 'Asteroids' game as the fourth item on the menu.
 :milky_way:
