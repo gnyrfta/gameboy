@@ -42,7 +42,7 @@ int cursorXOldPong{0};//Previous position of cursor in the y-direction.
 bool travellingRight{true};
 bool travellingLeft{false};
 
-bool runProgramPong = true;
+bool runProgramPong{true};
 
 void drawPadelOne(int yPosition);
 void drawPadelTwo(int yPosition);
@@ -68,139 +68,101 @@ void runPong()
   int storeValueLeftPadel=padelTwoXstart;
   int angle{0};
   int score = 0;
-  drawMenu();
+  //drawMenu();
   //drawStartPosition(padelOneYstart);
-  while(runProgramPong){
-      if(x_center >= 232 ) //collision right padel
+  while(runProgramPong){     
+    if(x_center >= 232 ) //collision right padel
+    {
+      if((y_center >= cursorYPong) && (y_center <=cursorYPong + 20))
       {
-        if((y_center >= cursorYPong) && (y_center <=cursorYPong + 20))
-        {
-        Serial.println("Collision!");
-        travellingRight = false;
-        travellingLeft = true;
-        storeValueRightPadel = cursorYPong;
-        cursorYPong = storeValueLeftPadel;
-        angle = determineAngle(y_center, cursorYPong);
-        score++;
-        }
-        else if(travellingRight)
-        {
-          Paint_DrawString_EN(30, 10, "Game Over", &Font24, WHITE, BLACK);
-          Paint_DrawString_EN(30, 30, "Score: ", &Font24, WHITE, BLACK);
-          Paint_DrawString_EN(140, 30, toString(score), &Font24, WHITE, BLACK);
-          delay(3000);
-          runProgramPong = false;
-        }
-        else
-        {
-          redrawStaticPadelTwo(storeValueRightPadel);
-        }
+      Serial.println("Collision!");
+      travellingRight = false;
+      travellingLeft = true;
+      storeValueRightPadel = cursorYPong;
+      cursorYPong = storeValueLeftPadel;
+      angle = determineAngle(y_center, cursorYPong);
+      score++;
       }
-      else if(x_center <=8)//collision left padel
+      else if(travellingRight)
       {
-        if((y_center >= cursorYPong) && (y_center <=cursorYPong + 20))
-        {
-        travellingRight = true;
-        travellingLeft = false;
-        storeValueLeftPadel = cursorYPong;
-        cursorYPong = storeValueRightPadel;
-        Serial.println("Collision!");
-        score++;
-        }
-        else if(travellingLeft)
-        {
-          
-          Paint_DrawString_EN(30, 10, "Game Over", &Font24, WHITE, BLACK);
-          Paint_DrawString_EN(30, 30, "Score: ", &Font24, WHITE, BLACK);
-          Paint_DrawString_EN(140, 30, toString(score), &Font24, WHITE, BLACK);
-          delay(3000);
-          runProgramPong = false;
-        }
-        else
-        {
-          redrawStaticPadelOne(storeValueLeftPadel);
-        }
+        Paint_DrawString_EN(30, 10, "Game Over", &Font24, WHITE, BLACK);
+        Paint_DrawString_EN(30, 30, "Score: ", &Font24, WHITE, BLACK);
+        Paint_DrawString_EN(140, 30, toString(score), &Font24, WHITE, BLACK);
+        delay(3000);
+        runProgramPong = false;
       }
       else
       {
-        //x-value is between the walls, do nothing.
+        redrawStaticPadelTwo(storeValueRightPadel);
       }
-
-      if((y_center<=2)||(y_center>=280)) //Bounce according to law of reflection against roof and floor. 
+    }
+    else if(x_center <=8)//collision left padel
+    {
+      if((y_center >= cursorYPong) && (y_center <=cursorYPong + 20))
       {
-        angle = angle*-1;      
-      }
-      if(travellingRight)
-      {
-      x_center_old = x_center;
-      y_center_old = y_center;
-      moveBallRight(angle);
+      travellingRight = true;
+      travellingLeft = false;
+      storeValueLeftPadel = cursorYPong;
+      cursorYPong = storeValueRightPadel;
+      Serial.println("Collision!");
+      score++;
       }
       else if(travellingLeft)
       {
-        x_center_old = x_center;
-        y_center_old = y_center;
-        moveBallLeft(angle);
+        
+        Paint_DrawString_EN(30, 10, "Game Over", &Font24, WHITE, BLACK);
+        Paint_DrawString_EN(30, 30, "Score: ", &Font24, WHITE, BLACK);
+        Paint_DrawString_EN(140, 30, toString(score), &Font24, WHITE, BLACK);
+        delay(3000);
+        runProgramPong = false;
       }
+      else
+      {
+        redrawStaticPadelOne(storeValueLeftPadel);
+      }
+    }
+    else
+    {
+      //x-value is between the walls, do nothing.
+    }
+    if((y_center<=2)||(y_center>=320)) //Bounce according to law of reflection against roof and floor. 
+    {
+      angle = angle*-1;      
+    }
+    if(travellingRight)
+    {
+    x_center_old = x_center;
+    y_center_old = y_center;
+    moveBallRight(angle);
+    }
+    else if(travellingLeft)
+    {
+      x_center_old = x_center;
+      y_center_old = y_center;
+      moveBallLeft(angle);
+    }
 
-      Paint_DrawCircle(x_center_old,y_center_old, radius, background, line_width, draw_fill);//Draw Ball
-      Paint_DrawCircle(x_center,y_center, radius, ball_colour, line_width, draw_fill);
-      
-      resetCommand();//resets the joystick command variable to zero.
-      yValuePong = readJoyStickY();//reads the potentiometer value from the joystick in the y-direction and gives it as an int.
-      xValuePong = readJoyStickX();//X-value is only used to select quit or replay.
-      setCommand(xValuePong,yValuePong);//Sets command to left,right, up or down.
-      cursorYOldPong = cursorYPong;
-      cursorXOldPong = cursorXPong;
-      cursorYPong = changeCursorYValue(cursorYPong);
-      cursorXPong = changeCursorXValue(cursorYPong);
-      if(travellingLeft)
-      {
-        drawPadelOne(cursorYPong);
-      } 
-      if(travellingRight)
-      {
-        drawPadelTwo(cursorYPong);
-      }
-     if((cursorYPong > 282))
-      {
-        if(cursorXPong < 90)
-        {
-          //Paint_DrawString_EN(10, 290, "Quit", &Font24, WHITE, BLUE);
-          highlightQuit(true);              
-          if(buttonPressed())
-          {
-          runProgramPong = false;
-          }
-        }
-        if((cursorXPong > 90) && (cursorXOldPong <= 90))
-        {
-          highlightQuit(false);
-        }
-        if(cursorXPong > 90)
-        {
-          highlightReplay(true);
-          if(buttonPressed())
-          {
-            x_center=120;
-            y_center=160;
-            score = 0;
-            drawMenu();
-          }
-        }
-        if((cursorXPong < 90) && (cursorXOldPong >= 90))
-        {
-          highlightReplay(false);
-        }
-      }
-      if((cursorYPong < 282) && (cursorYOldPong >= 282))
-      {
-        highlightQuit(false);
-        highlightReplay(false);
-        //Paint_DrawString_EN(10, 290, "Quit", &Font24, WHITE, BLACK); 
-      }      
-  }    
+    Paint_DrawCircle(x_center_old,y_center_old, radius, background, line_width, draw_fill);//Draw Ball
+    Paint_DrawCircle(x_center,y_center, radius, ball_colour, line_width, draw_fill);
+    
+    resetCommand();//resets the joystick command variable to zero.
+    yValuePong = readJoyStickY();//reads the potentiometer value from the joystick in the y-direction and gives it as an int.
+    xValuePong = readJoyStickX();//X-value is only used to select quit or replay.
+    setCommand(xValuePong,yValuePong);//Sets command to left,right, up or down.
+    cursorYOldPong = cursorYPong;
+    cursorXOldPong = cursorXPong;
+    cursorYPong = changeCursorYValue(cursorYPong);
+    cursorXPong = changeCursorXValue(cursorYPong);
+    if(travellingLeft)
+    {
+      drawPadelOne(cursorYPong);
+    } 
+    if(travellingRight)
+    {
+      drawPadelTwo(cursorYPong);
+    }
   
+  }     
 }
 void drawPadelOne(int yPosition)
 {

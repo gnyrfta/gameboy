@@ -24,6 +24,7 @@ In DEV_Config the baud rate is set to 115200 bit/second, so the serial monitor n
 #include "joystick.h"
 #include "etchasketch.h"
 #include "pong.h"
+#include "asteroids.h"
 
 using namespace std;
 
@@ -37,9 +38,11 @@ int cursorXOld{0};
 int cursorYOld{0};
 
 bool drawMandelbrot{false};
-bool drawGradient{false};
+bool playAsteroids{false};
 bool etchASketch{false};
 bool playPong{false};
+bool drawGradient{false};
+
 
 void setup() 
 {
@@ -88,7 +91,12 @@ void loop() //Presents the menu and if 'Mandelbrot' is clicked it starts drawing
       delay(200);
       playPong=true;
     }
-    
+    else if((cursorY>90) && (cursorY<110))
+    {
+      Paint_DrawString_EN(30,90, "Asteroids", &Font24, BLUE, WHITE);
+      delay(200);
+      playAsteroids=true;
+    }
   }
   if(!(cursorX==cursorXOld && cursorY==cursorYOld)) // If the cursor has moved.
   {
@@ -100,6 +108,8 @@ void loop() //Presents the menu and if 'Mandelbrot' is clicked it starts drawing
           Paint_DrawString_EN(30,30, "Gradient", &Font24, WHITE, BLACK);
           Paint_DrawString_EN(10,50,"Etch a sketch", &Font24, WHITE, BLACK);
           Paint_DrawString_EN(30,70,"Pong", &Font24, WHITE, BLACK);
+          Paint_DrawString_EN(30,90,"Asteroids", &Font24, WHITE, BLACK);
+
         }
      }
      else if((50>cursorY) && (cursorY>30))
@@ -110,6 +120,8 @@ void loop() //Presents the menu and if 'Mandelbrot' is clicked it starts drawing
         Paint_DrawString_EN(30,30, "Gradient", &Font24, WHITE, BLUE);
         Paint_DrawString_EN(10,50,"Etch a sketch", &Font24, WHITE, BLACK);
         Paint_DrawString_EN(30,70,"Pong", &Font24, WHITE, BLACK);
+        Paint_DrawString_EN(30,90,"Asteroids", &Font24, WHITE, BLACK);
+
       }
      }
       else if((70>cursorY) && (cursorY>50))
@@ -120,6 +132,8 @@ void loop() //Presents the menu and if 'Mandelbrot' is clicked it starts drawing
         Paint_DrawString_EN(30,30, "Gradient", &Font24, WHITE, BLACK);
         Paint_DrawString_EN(10,50,"Etch a sketch", &Font24, WHITE, BLUE);
         Paint_DrawString_EN(30,70,"Pong", &Font24, WHITE, BLACK);
+        Paint_DrawString_EN(30,90,"Asteroids", &Font24, WHITE, BLACK);
+
       }
      }
       else if((90>cursorY) && (cursorY>70))
@@ -130,6 +144,20 @@ void loop() //Presents the menu and if 'Mandelbrot' is clicked it starts drawing
         Paint_DrawString_EN(30,30, "Gradient", &Font24, WHITE, BLACK);
         Paint_DrawString_EN(10,50,"Etch a sketch", &Font24, WHITE, BLACK);
         Paint_DrawString_EN(30,70,"Pong", &Font24, WHITE, BLUE);
+        Paint_DrawString_EN(30,90,"Asteroids", &Font24, WHITE, BLACK);
+
+      }
+     }
+      else if((110>cursorY) && (cursorY>90))
+     {
+      if(!((110>cursorYOld) && (cursorYOld>90)))
+      {
+        Paint_DrawString_EN(30, 10, "Mandelbrot", &Font24, WHITE, BLACK);
+        Paint_DrawString_EN(30,30, "Gradient", &Font24, WHITE, BLACK);
+        Paint_DrawString_EN(10,50,"Etch a sketch", &Font24, WHITE, BLACK);
+        Paint_DrawString_EN(30,70,"Pong", &Font24, WHITE, BLACK);
+        Paint_DrawString_EN(30,90,"Asteroids", &Font24, WHITE, BLUE);
+
       }
      }
   }
@@ -183,6 +211,19 @@ void loop() //Presents the menu and if 'Mandelbrot' is clicked it starts drawing
     readJoyStickButton();
     drawStartMenu();
   }
+  if(playAsteroids)
+  {
+    //bool runEtchASketch{true};
+    LCD_Clear(0xffff);
+    Paint_NewImage(LCD_WIDTH, LCD_HEIGHT, 0, WHITE);
+    Paint_Clear(WHITE);
+    delay(1000);
+    runAsteroids();
+    playAsteroids = false;
+    delay(500);
+    readJoyStickButton();
+    drawStartMenu();
+  }  
 }
 void drawStartMenu()
 {
@@ -193,5 +234,6 @@ void drawStartMenu()
   Paint_DrawString_EN(30,30, "Gradient", &Font24, WHITE, BLACK);
   Paint_DrawString_EN(10,50,"Etch a sketch", &Font24, WHITE, BLACK);
   Paint_DrawString_EN(30,70,"Pong", &Font24, WHITE, BLACK);
+  Paint_DrawString_EN(30,90,"Asteroids", &Font24, WHITE, BLACK);
 }
 #endif

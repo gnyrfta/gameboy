@@ -21,23 +21,21 @@ In DEV_Config the baud rate is set to 115200 bit/second, so the serial monitor n
 - [X] Blank screen and delay for a second or so before launching fractal program, so the menu doesn't look like its 'eaten' from below.
 - [X] Figure out why only the contours of the set are showing - why is the inside of the figure black instead of max colour?
 - [X] Possible to escape fractal program by pressing button.
-- Add more colours to the fractal program. :art:
+- [ ] Add more colours to the fractal program. :art:
 
 ### After that
 - [X] Implement an 'etch a sketch' as the next item on the menu.
 - [X] Figure out a good way to exit the etchasketch.
-- [ ] Implement Pong
+- [X] Implement Pong
   - [X] Make ball direction after impact depend on where on the padel it hit.
   - [X] Add score at end of game.
   - [X] Add second padel
   - [X] Optimize ball speed and padel speed. Redraw only top and bottom pixels of rectangle. Make rectangle thinner. Could be optimized more. 
   - [ ] Add high score. Is there any way to store this between restarts in Arduino? 
-  - [ ] Add escape button. 1 
   - [X] Increase ball size.
   - [X] Fix bug where there are two padels on one side when moving below the middle. Disappears when returning past middle.
   - [X] Fix collision logic, it bounces off nothing sometimes now. Seems to be fixed. Will reopen if reappears. 
   - [X] Put type conversion into a separate file. 2
-  - [ ] Create a better way to quit or restart Pong. When game over, two options selectable by up/down on joystick.
   
 - Implement Filips 'Asteroids' game as the fourth item on the menu.
 :milky_way:
