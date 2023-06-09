@@ -20,6 +20,9 @@ using namespace std;
 ezButton button(SW_PIN);//Necessary for registering pushdown-state. 
 int cursorSpeed{3};
 
+int angle{0};
+int rotationSpeed = 10;
+int originSpeed = 0;
 
 int command = COMMAND_NO;
 void joyStickInit()
@@ -76,6 +79,35 @@ int changeCursorYValue(int cursorY)
   }
   return cursorY;
 }
+int changeAngle()
+{
+  if (command & COMMAND_LEFT) 
+  {
+   // Serial.println("COMMAND LEFT");
+      angle-=rotationSpeed;
+  }
+  else if (command & COMMAND_RIGHT) 
+  {
+    //Serial.println("COMMAND RIGHT");
+      angle+=rotationSpeed;
+  }
+  return angle;
+}
+int changeOriginSpeed()
+{
+  if (command & COMMAND_UP) 
+  {
+   // Serial.println("COMMAND LEFT");
+    originSpeed +=1;
+  }
+  else if (command & COMMAND_DOWN) 
+  {
+    //Serial.println("COMMAND RIGHT");
+    originSpeed-=1;
+  }
+  return originSpeed;
+}
+
 int readJoyStickButton()
 {
   button.loop(); // MUST call the loop() function first

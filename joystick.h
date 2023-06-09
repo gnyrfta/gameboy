@@ -12,5 +12,8 @@ int readJoyStickX();
 int readJoyStickY();
 void resetCommand();
 void setCursorSpeed(int speed);
+int changeAngle();
+int changeOriginSpeed();
+
 
 #endif
