@@ -10,6 +10,10 @@ static int draw_fill = DOT_FILL_AROUND;
 //A, B, C are the points in the triangle.
 //R is the angle of the ship. Currently the angle is the angle from the y-axis, counted clockwise. 
 //The orientation of the screen means that a starting angle of zero points straight downwards. 
+//Ship specs:
+static int xOrigin{120};
+static int yOrigin{160};
+static int speedShip{0};
 
 static double a;
 static double b;
@@ -21,7 +25,6 @@ static int Cx;
 static int Cy;
 static int R;
 
-//To store previous position:
 static int AxOld;
 static int AyOld;
 static int BxOld;
@@ -33,16 +36,17 @@ static int CyOld;
 static int xValueShip;
 static int yValueShip;
 
-//
-static int xOrigin = 120;
-static int yOrigin = 160;
-static int originSpeedAsteroids = 0;
 
+
+//Asteroid specs: 
 static int asteroidXOrigins[8];
 static int asteroidYOrigins[8];
 static int asteroidXVelocity[8];
 static int asteroidYVelocity[8]; 
+static int asteroidXOriginsOld[8];
+static int asteroidYOriginsOld[8];
 
+//Shot specs:
 static int shotXCoordinates[8] = {0,0,0,0,0,0,0,0};//0 - no active shot.
 static int shotYCoordinates[8] = {0,0,0,0,0,0,0,0};//
 static int shotXCoordinatesOld[8] = {0,0,0,0,0,0,0,0};//0 - no active shot.
@@ -50,36 +54,38 @@ static int shotYCoordinatesOld[8] = {0,0,0,0,0,0,0,0};//
 static int shotAngles[8] = {0,0,0,0,0,0,0,0};
 static int activeShots = 0;
 
-static int asteroidXOriginsOld[8];
-static int asteroidYOriginsOld[8];
+//Input function:
+void readJoyStickAsteroids(); //Asteroids here refers to the game, not to the asteroids.
 
+//Ship functions: 
 void setShipStartPos();
-void shiftOrigin();
+void rotateShip();//Sets ship to current rotation angle. If joystick 'left' or 'right' increments angle.
+void translationMotion();//Updates the unfortunately named xOrigin and yOrigin according to current ship speed and angle.
+void shiftOrigin();//Updates position of points A,B and C in the ships triangle using the new values of xOrigin and yOrigin. The 'logic' behind calling them xOrigin and yOrigin is that they are the origin in the reference 
+//in which the points A,B and C always would have the same x and y-values, i.e. the ref. frame travelling with the ship. 
 void drawShip();
 void eraseShip();
-void moveShip();
-void rotateShip();
-void moveAsteroids();
-void readJoyStickAsteroids();
-void translationMotion();
 
+//Asteroid functions:
 void positionAsteroids();
 void setVelocityAsteroids();
+void moveAsteroids();
 void drawAsteroids();
 
+//Shot functions: 
 void shoot();
 void translationMotionShots(int angle, int shotnumber);
 void drawShots();
-
 
 void runAsteroids()
 {
   setShipStartPos();
   drawShip();
-  delay(3000);
+  delay(1000);
   activeShots = 0;
   positionAsteroids();
   setVelocityAsteroids();
+
   while(true)
   {
     AxOld = Ax;
@@ -94,7 +100,6 @@ void runAsteroids()
     shiftOrigin();
     if(buttonPressed())
     {
-      Serial.println("button pressed");
       shoot();
     }
     for (int i = 0;i<activeShots;i++)
@@ -153,7 +158,7 @@ void shiftOrigin()
 }
 void translationMotion() 
 {
-  int L = originSpeedAsteroids;
+  int L = speedShip;
   double degree = (double)R;
   double radian = (degree/180.0)*PI;
   int xBoost = (int)L*sin(radian);
@@ -181,15 +186,15 @@ void translationMotionShots(int angle, int shotnumber)
 {
   int shotSpeed = 10;
   int L = shotSpeed;
+  int i = shotnumber;
   double degree = (double)angle;
   double radian = (degree/180.0)*PI;
   int xBoost = (int)L*sin(radian);
   int yBoost = (int)L*cos(radian);
-  shotXCoordinatesOld[shotnumber] = shotXCoordinates[shotnumber];
-  shotYCoordinatesOld[shotnumber] = shotYCoordinates[shotnumber];
-  shotXCoordinates[shotnumber] += xBoost;
-  shotYCoordinates[shotnumber] += yBoost;
-  int i = shotnumber;
+  shotXCoordinatesOld[i] = shotXCoordinates[i];
+  shotYCoordinatesOld[i] = shotYCoordinates[i];
+  shotXCoordinates[i] += xBoost;
+  shotYCoordinates[i] += yBoost;
   if(shotXCoordinates[i] > 236)
   {
     activeShots--;
@@ -254,7 +259,7 @@ void readJoyStickAsteroids()
   yValueShip = readJoyStickY();//reads the potentiometer value from the joystick in the y-direction and gives it as an int.
   setCommand(xValueShip,yValueShip);//Sets command to left,right, up or down.
   R = changeAngle();
-  originSpeedAsteroids = changeOriginSpeed();
+  speedShip = changeOriginSpeed();
   readJoyStickButton();
 } 
 void rotateShip()
@@ -271,17 +276,12 @@ void rotateShip()
 }
 void shoot()
 { 
-      //Store angle.
+  //Store angle.
   activeShots++;
   int i = activeShots;  
   shotAngles[i] = R;
   shotXCoordinates[i]=Ax;
   shotYCoordinates[i]=Ay;
-  /*Serial.println("in shoot");
-  Serial.println("active shots");
-  Serial.println(activeShots);*/
-    //translationMotionShots(angle)
-//Ax Ay, use translation motion code. 
 }
 void moveAsteroids()
 { 
@@ -329,6 +329,5 @@ void setVelocityAsteroids()
   { 
     asteroidXVelocity[i] = random(4);
     asteroidYVelocity[i] = random(4);
-    //Make sure asteroids don't start too close to the ship: 
   }
 }
