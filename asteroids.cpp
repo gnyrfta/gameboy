@@ -6,6 +6,11 @@
 static int line_width = DOT_PIXEL_DFT;    
 static int draw_fill = DOT_FILL_AROUND;
 
+//a and b are sides in the triangle that makes up the ship.
+//A, B, C are the points in the triangle.
+//R is the angle of the ship. Currently the angle is the angle from the y-axis, counted clockwise. 
+//The orientation of the screen means that a starting angle of zero points straight downwards. 
+
 static double a;
 static double b;
 static int Ax;
@@ -16,6 +21,7 @@ static int Cx;
 static int Cy;
 static int R;
 
+//To store previous position:
 static int AxOld;
 static int AyOld;
 static int BxOld;
@@ -23,21 +29,19 @@ static int ByOld;
 static int CxOld;
 static int CyOld;
 
+//Stores value from joystick in x-direction and y-directions.
 static int xValueShip;
 static int yValueShip;
-static int cursorXShip;
-static int cursorYShip;
-static int cursorXOldShip;
-static int cursorYOldShip;
 
+//
 static int xOrigin = 120;
 static int yOrigin = 160;
 static int originSpeedAsteroids = 0;
 
-static int asteroidXOrigins[8] = {0,50,100,110,10,200,228,230};
-static int asteroidYOrigins[8] = {0,50,100,110,10,200,229,230};
-static int asteroidXVelocity[8] = {3,2,1,0,2,1,3,2};
-static int asteroidYVelocity[8] = {0,2,1,3,2,1,1,2}; 
+static int asteroidXOrigins[8];
+static int asteroidYOrigins[8];
+static int asteroidXVelocity[8];
+static int asteroidYVelocity[8]; 
 
 static int shotXCoordinates[8] = {0,0,0,0,0,0,0,0};//0 - no active shot.
 static int shotYCoordinates[8] = {0,0,0,0,0,0,0,0};//
@@ -59,11 +63,14 @@ void moveAsteroids();
 void readJoyStickAsteroids();
 void translationMotion();
 
+void positionAsteroids();
+void setVelocityAsteroids();
 void drawAsteroids();
 
 void shoot();
 void translationMotionShots(int angle, int shotnumber);
 void drawShots();
+
 
 void runAsteroids()
 {
@@ -71,6 +78,8 @@ void runAsteroids()
   drawShip();
   delay(3000);
   activeShots = 0;
+  positionAsteroids();
+  setVelocityAsteroids();
   while(true)
   {
     AxOld = Ax;
@@ -91,11 +100,6 @@ void runAsteroids()
     for (int i = 0;i<activeShots;i++)
     {
       translationMotionShots(shotAngles[i],i);
-      /*Serial.println(shotXCoordinates[i]);
-      Serial.println(shotYCoordinates[i]);
-      Serial.println("in for loop");
-      Serial.println("Active shots: ");
-      Serial.print(activeShots);*/
     }
     eraseShip();
     drawShip();
@@ -273,15 +277,14 @@ void shoot()
   shotAngles[i] = R;
   shotXCoordinates[i]=Ax;
   shotYCoordinates[i]=Ay;
-  Serial.println("in shoot");
+  /*Serial.println("in shoot");
   Serial.println("active shots");
-  Serial.println(activeShots);
+  Serial.println(activeShots);*/
     //translationMotionShots(angle)
 //Ax Ay, use translation motion code. 
 }
 void moveAsteroids()
-{
-  
+{ 
   for(int i=0;i<8;i++)
   {
     asteroidXOriginsOld[i] = asteroidXOrigins[i];
@@ -296,5 +299,36 @@ void moveAsteroids()
     {
       asteroidYOrigins[i]=0;
     }
+  }
+}
+void positionAsteroids()
+{
+    randomSeed(analogRead(2));
+  for(int i=0;i<8;i++)
+  { 
+    asteroidXOrigins[i] = random(10, 230);
+    asteroidYOrigins[i] = random(10, 310);
+    //Make sure asteroids don't start too close to the ship:
+    while((asteroidXOrigins[i] > (xOrigin - 10)) && (asteroidXOrigins[i] < (xOrigin + 10)))
+    {
+      randomSeed(analogRead(2));
+      asteroidXOrigins[i] = random(10,230);
+    }
+    while((asteroidYOrigins[i] > (yOrigin - 10)) && (asteroidYOrigins[i] < (yOrigin + 10)))
+    {
+      randomSeed(analogRead(2));
+      asteroidYOrigins[i] = random(10,310);
+    }
+    Serial.println(asteroidXOrigins[i]);
+  }
+}
+void setVelocityAsteroids()
+{ 
+    randomSeed(analogRead(2));
+  for(int i=0;i<8;i++)
+  { 
+    asteroidXVelocity[i] = random(4);
+    asteroidYVelocity[i] = random(4);
+    //Make sure asteroids don't start too close to the ship: 
   }
 }
