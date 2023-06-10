@@ -39,6 +39,13 @@ static int asteroidYOrigins[8] = {0,50,100,110,10,200,229,230};
 static int asteroidXVelocity[8] = {3,2,1,0,2,1,3,2};
 static int asteroidYVelocity[8] = {0,2,1,3,2,1,1,2}; 
 
+static int shotXCoordinates[8] = {0,0,0,0,0,0,0,0};//0 - no active shot.
+static int shotYCoordinates[8] = {0,0,0,0,0,0,0,0};//
+static int shotXCoordinatesOld[8] = {0,0,0,0,0,0,0,0};//0 - no active shot.
+static int shotYCoordinatesOld[8] = {0,0,0,0,0,0,0,0};//
+static int shotAngles[8] = {0,0,0,0,0,0,0,0};
+static int activeShots = 0;
+
 static int asteroidXOriginsOld[8];
 static int asteroidYOriginsOld[8];
 
@@ -54,11 +61,16 @@ void translationMotion();
 
 void drawAsteroids();
 
+void shoot();
+void translationMotionShots(int angle, int shotnumber);
+void drawShots();
+
 void runAsteroids()
 {
   setShipStartPos();
   drawShip();
   delay(3000);
+  activeShots = 0;
   while(true)
   {
     AxOld = Ax;
@@ -74,18 +86,26 @@ void runAsteroids()
     if(buttonPressed())
     {
       Serial.println("button pressed");
-     // We want to shoot here.
+      shoot();
+    }
+    for (int i = 0;i<activeShots;i++)
+    {
+      translationMotionShots(shotAngles[i],i);
+      /*Serial.println(shotXCoordinates[i]);
+      Serial.println(shotYCoordinates[i]);
+      Serial.println("in for loop");
+      Serial.println("Active shots: ");
+      Serial.print(activeShots);*/
     }
     eraseShip();
     drawShip();
+    drawShots();
     moveAsteroids();
     drawAsteroids();
   }
-  Serial.println("Mysteriously escaped");
 }
 void setShipStartPos()
 {
-  Serial.println("in setShipStartPos()");
   //first test - a = b = c, determines ship shape.
   R = 0;
   a = 8;
@@ -94,9 +114,7 @@ void setShipStartPos()
   Ay = a;
   double bStartingAngle = -(150.0/180.0)*PI;
   Bx = b*sin(bStartingAngle);
-  //Serial.println(sin(bStartingAngle));
   By = (int)b*cos(bStartingAngle);
-  //Serial.println(cos(bStartingAngle));
   double cStartingAngle = bStartingAngle*(-1);
   Cx = (int)b*sin(cStartingAngle);
   Cy = (int)b*cos(cStartingAngle);
@@ -104,21 +122,15 @@ void setShipStartPos()
 }
 void drawShip()
 {
-  //Serial.println("In drawShip");
   //From C to A:
   Paint_DrawLine(Cx, Cy, Ax, Ay, WHITE, line_width, draw_fill);
   //From A to B: 
   Paint_DrawLine(Ax, Ay, Bx, By, WHITE, line_width, draw_fill);
   // From B to C: 
   Paint_DrawLine(Bx, By, Cx, Cy, WHITE, line_width, draw_fill);
- // Serial.println(Bx);
- // Serial.println(By);
- // Serial.println(Cx);
- // Serial.println(Cy);
 }
 void eraseShip()
 {
- // Serial.println("In eraseShip");
   //From C to A:
   Paint_DrawLine(CxOld, CyOld, AxOld, AyOld, BLACK, line_width, 0);
   //From A to B: 
@@ -144,23 +156,90 @@ void translationMotion()
   int yBoost = (int)L*cos(radian);
   xOrigin += xBoost;
   yOrigin += yBoost;
- 
-  Serial.println("xBoost: ");
-  Serial.println(xBoost);
-  Serial.println("yBoost: ");
-  Serial.println(yBoost);
+  if(xOrigin > 230)
+  {
+    xOrigin = 8;
+  }
+  if(yOrigin > 310)
+  {
+    yOrigin = 8;
+  }
+  if(xOrigin < 8)
+  {
+    xOrigin = 230;
+  }    
+  if(yOrigin < 8)
+  {
+    yOrigin = 310;
+  }
+}
+void translationMotionShots(int angle, int shotnumber)
+{
+  int shotSpeed = 10;
+  int L = shotSpeed;
+  double degree = (double)angle;
+  double radian = (degree/180.0)*PI;
+  int xBoost = (int)L*sin(radian);
+  int yBoost = (int)L*cos(radian);
+  shotXCoordinatesOld[shotnumber] = shotXCoordinates[shotnumber];
+  shotYCoordinatesOld[shotnumber] = shotYCoordinates[shotnumber];
+  shotXCoordinates[shotnumber] += xBoost;
+  shotYCoordinates[shotnumber] += yBoost;
+  int i = shotnumber;
+  if(shotXCoordinates[i] > 236)
+  {
+    activeShots--;
+    shotXCoordinates[i]=0;
+    shotYCoordinates[i]=0;
+    shotXCoordinatesOld[i]=0;
+    shotYCoordinatesOld[i]=0;
+    shotAngles[i] = 0;
+  }
+  if(shotYCoordinates[i] > 316)
+  {
+    activeShots--;
+    shotXCoordinates[i]=0;
+    shotYCoordinates[i]=0;
+    shotXCoordinatesOld[i]=0;
+    shotYCoordinatesOld[i]=0;
+    shotAngles[i] = 0;
+  }
+  if(shotXCoordinates[i] < 8)
+  {
+    activeShots--;
+    shotXCoordinates[i]=0;
+    shotYCoordinates[i]=0;
+    shotXCoordinatesOld[i]=0;
+    shotYCoordinatesOld[i]=0;
+    shotAngles[i] = 0;
+  }    
+  if(shotYCoordinates[i] < 8)
+  {
+    activeShots--;
+    shotXCoordinates[i]=0;
+    shotYCoordinates[i]=0;
+    shotXCoordinatesOld[i]=0;
+    shotYCoordinatesOld[i]=0;
+    shotAngles[i] = 0;
+  }
+
 }
 void drawAsteroids()
 { 
   for(int i = 0;i<8;i++)
   {
-    //Paint_DrawCircle(asteroidXOrigins[i],asteroidYOrigins[i],5,WHITE,line_width,DRAW_FILL_EMPTY);
-    //Paint_DrawString_EN(asteroidXOrigins[i], asteroidYOrigins[i], ".", &Font16, BLACK, WHITE); 
     Paint_DrawPoint(asteroidXOriginsOld[i], asteroidYOriginsOld[i], BLACK,3,DOT_FILL_AROUND); 
     Paint_DrawPoint(asteroidXOrigins[i], asteroidYOrigins[i], WHITE,3,DOT_FILL_AROUND);    
   }
-  //Serial.println("In drawAsteroids");
-  //Paint_DrawCircle()
+}
+void drawShots()
+{ 
+  for(int i = 0;i<activeShots;i++)
+  {
+    Paint_DrawPoint(shotXCoordinatesOld[i], shotYCoordinatesOld[i], BLACK,1,DOT_FILL_AROUND); 
+    Paint_DrawPoint(shotXCoordinates[i], shotYCoordinates[i], WHITE,1,DOT_FILL_AROUND);    
+  }
+
 }
 void readJoyStickAsteroids()
 {
@@ -173,11 +252,6 @@ void readJoyStickAsteroids()
   R = changeAngle();
   originSpeedAsteroids = changeOriginSpeed();
   readJoyStickButton();
-
-  //cursorXOldShip = cursorXShip; //Used to overwrite former cursor position. Not used in etchaSketch, but necessary if you would want the cursor to be a cursor sometime.
-  //cursorYOldShip = cursorYShip;
-  //cursorXShip = changeCursorXValue(cursorXShip);//Increments x or y-value of cursor according to 'command'. 
-  //cursorYShip = changeCursorYValue(cursorYShip);
 } 
 void rotateShip()
 { 
@@ -192,12 +266,18 @@ void rotateShip()
   Cy = (int)b*cos(radian + bStartingAngle);
 }
 void shoot()
-{
+{ 
+      //Store angle.
+  activeShots++;
+  int i = activeShots;  
+  shotAngles[i] = R;
+  shotXCoordinates[i]=Ax;
+  shotYCoordinates[i]=Ay;
+  Serial.println("in shoot");
+  Serial.println("active shots");
+  Serial.println(activeShots);
+    //translationMotionShots(angle)
 //Ax Ay, use translation motion code. 
-}
-void boost()
-{
-
 }
 void moveAsteroids()
 {
@@ -217,5 +297,4 @@ void moveAsteroids()
       asteroidYOrigins[i]=0;
     }
   }
- // Serial.println("In moveAsteroids");
 }

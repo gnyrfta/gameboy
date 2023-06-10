@@ -84,12 +84,12 @@ int changeAngle()
   if (command & COMMAND_LEFT) 
   {
    // Serial.println("COMMAND LEFT");
-      angle-=rotationSpeed;
+      angle+=rotationSpeed;
   }
   else if (command & COMMAND_RIGHT) 
   {
     //Serial.println("COMMAND RIGHT");
-      angle+=rotationSpeed;
+      angle-=rotationSpeed;
   }
   return angle;
 }
