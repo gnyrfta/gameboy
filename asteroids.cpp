@@ -74,14 +74,15 @@ void drawAsteroids();
 
 //Shot functions: 
 void shoot();
-void translationMotionShots(int angle, int shotnumber);
+void translationMotionShots(int angle, int shotnumber);//increments position of shot #shotnumber according to angle
 void drawShots();
+void eraseShot(int shotnumber);
 
 void runAsteroids()
 {
+  delay(4000); //to avoid buttonpress being registered immediately. 
   setShipStartPos();
   drawShip();
-  delay(1000);
   activeShots = 0;
   positionAsteroids();
   setVelocityAsteroids();
@@ -102,9 +103,12 @@ void runAsteroids()
     {
       shoot();
     }
-    for (int i = 0;i<activeShots;i++)
+    if(activeShots!=0)
     {
-      translationMotionShots(shotAngles[i],i);
+      for (int i = 0;i<activeShots;i++)
+      {
+        translationMotionShots(shotAngles[i],i);
+      }
     }
     eraseShip();
     drawShip();
@@ -116,6 +120,7 @@ void runAsteroids()
 void setShipStartPos()
 {
   //first test - a = b = c, determines ship shape.
+  //All angles are measured clockwise from the y-axis. Should some time change this to conterclockwise from the x-axis since thats what's used in the unit circle. 
   R = 0;
   a = 8;
   b = 8;
@@ -149,6 +154,7 @@ void eraseShip()
 }
 void shiftOrigin()
 {
+  //As the 'origin' of the triangle moves the ship the points need to be repositioned, since they are first always calculated as if the origin was zero.
   Ax += xOrigin;
   Ay += yOrigin;
   Bx += xOrigin;
@@ -156,7 +162,7 @@ void shiftOrigin()
   Cx += xOrigin;
   Cy += yOrigin;
 }
-void translationMotion() 
+void translationMotion() //Calculates how far the ship should move each loop. 
 {
   int L = speedShip;
   double degree = (double)R;
@@ -187,6 +193,15 @@ void translationMotionShots(int angle, int shotnumber)
   int shotSpeed = 10;
   int L = shotSpeed;
   int i = shotnumber;
+  Serial.println("shotnumber");
+  Serial.println(shotnumber);
+  //int temp2 = shotnumber-1;
+  Serial.println("Tr");
+  for(int temp=0;temp<8;temp++)
+  {
+  Serial.println(shotXCoordinates[temp]);
+  Serial.println(shotYCoordinates[temp]);
+  }
   double degree = (double)angle;
   double radian = (degree/180.0)*PI;
   int xBoost = (int)L*sin(radian);
@@ -195,43 +210,35 @@ void translationMotionShots(int angle, int shotnumber)
   shotYCoordinatesOld[i] = shotYCoordinates[i];
   shotXCoordinates[i] += xBoost;
   shotYCoordinates[i] += yBoost;
+
   if(shotXCoordinates[i] > 236)
   {
-    activeShots--;
-    shotXCoordinates[i]=0;
-    shotYCoordinates[i]=0;
-    shotXCoordinatesOld[i]=0;
-    shotYCoordinatesOld[i]=0;
-    shotAngles[i] = 0;
+    eraseShot(i);
+    Serial.print("Active shots:");
+    Serial.println(activeShots);
+    Serial.println("one");
   }
-  if(shotYCoordinates[i] > 316)
+  else if(shotYCoordinates[i] > 316)
   {
-    activeShots--;
-    shotXCoordinates[i]=0;
-    shotYCoordinates[i]=0;
-    shotXCoordinatesOld[i]=0;
-    shotYCoordinatesOld[i]=0;
-    shotAngles[i] = 0;
+    eraseShot(i);
+    Serial.print("Active shots:");
+    Serial.println(activeShots);
+    Serial.println("two");
   }
-  if(shotXCoordinates[i] < 8)
+  else if(shotXCoordinates[i] < 8)
   {
-    activeShots--;
-    shotXCoordinates[i]=0;
-    shotYCoordinates[i]=0;
-    shotXCoordinatesOld[i]=0;
-    shotYCoordinatesOld[i]=0;
-    shotAngles[i] = 0;
+    eraseShot(i);
+    Serial.print("Active shots:");
+    Serial.println(activeShots);
+    Serial.println("three");
   }    
-  if(shotYCoordinates[i] < 8)
+  else if(shotYCoordinates[i] < 8)
   {
-    activeShots--;
-    shotXCoordinates[i]=0;
-    shotYCoordinates[i]=0;
-    shotXCoordinatesOld[i]=0;
-    shotYCoordinatesOld[i]=0;
-    shotAngles[i] = 0;
+    eraseShot(i);
+    Serial.print("Active shots:");
+    Serial.println(activeShots);
+    Serial.println("four");
   }
-
 }
 void drawAsteroids()
 { 
@@ -243,12 +250,30 @@ void drawAsteroids()
 }
 void drawShots()
 { 
-  for(int i = 0;i<activeShots;i++)
+  //Serial.println("in drawShots");
+  //Serial.print("Active shots: ");
+  //Serial.print(activeShots);
+  if(activeShots != 0)
   {
-    Paint_DrawPoint(shotXCoordinatesOld[i], shotYCoordinatesOld[i], BLACK,1,DOT_FILL_AROUND); 
-    Paint_DrawPoint(shotXCoordinates[i], shotYCoordinates[i], WHITE,1,DOT_FILL_AROUND);    
+    for(int i = 0;i<activeShots;i++)
+    {
+      Paint_DrawPoint(shotXCoordinatesOld[i-1], shotYCoordinatesOld[i-1], BLACK,1,DOT_FILL_AROUND); 
+      Paint_DrawPoint(shotXCoordinates[i-1], shotYCoordinates[i-1], WHITE,1,DOT_FILL_AROUND);
+    // Serial.println("Have drawn shots");    
+    }
   }
-
+ // Serial.println("Exiting drawShots");
+}
+void eraseShot(int i)
+{
+    Paint_DrawPoint(shotXCoordinatesOld[i], shotYCoordinatesOld[i], BLACK,1,DOT_FILL_AROUND);
+    Paint_DrawPoint(shotXCoordinates[i], shotYCoordinates[i], BLACK,1,DOT_FILL_AROUND); 
+    activeShots--;
+    shotXCoordinates[i]=0;
+    shotYCoordinates[i]=0;
+    shotXCoordinatesOld[i]=0;
+    shotYCoordinatesOld[i]=0;
+    shotAngles[i] = 0;   
 }
 void readJoyStickAsteroids()
 {
@@ -276,12 +301,29 @@ void rotateShip()
 }
 void shoot()
 { 
-  //Store angle.
+
+  if(activeShots < 8)
+  {
   activeShots++;
+  //Serial.println(activeShots);
   int i = activeShots;  
-  shotAngles[i] = R;
-  shotXCoordinates[i]=Ax;
-  shotYCoordinates[i]=Ay;
+  shotAngles[i-1] = R;
+  shotXCoordinates[i-1]=Ax;
+  shotYCoordinates[i-1]=Ay;
+  Serial.println("sh");
+  for(int temp=0;temp<8;temp++)
+  {
+  Serial.println(shotXCoordinates[temp]);
+  Serial.println(shotYCoordinates[temp]);
+  }
+ /* Serial.print("This is i: ");
+  Serial.println(i);
+  Serial.println(shotAngles[i-1]);
+  Serial.println(shotXCoordinates[i-1]);
+  Serial.println(shotYCoordinates[i-1]);
+*/  }
+
+  //Serial.println("Exiting shoot");    
 }
 void moveAsteroids()
 { 
@@ -319,7 +361,7 @@ void positionAsteroids()
       randomSeed(analogRead(2));
       asteroidYOrigins[i] = random(10,310);
     }
-    Serial.println(asteroidXOrigins[i]);
+    //Serial.println(asteroidXOrigins[i]);
   }
 }
 void setVelocityAsteroids()

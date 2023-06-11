@@ -35,13 +35,20 @@ In DEV_Config the baud rate is set to 115200 bit/second, so the serial monitor n
   - [X] Increase ball size.
   - [X] Fix bug where there are two padels on one side when moving below the middle. Disappears when returning past middle.
   - [X] Fix collision logic, it bounces off nothing sometimes now. Seems to be fixed. Will reopen if reappears. 
-  - [X] Put type conversion into a separate file. 2
+  - [X] Put type conversion into a separate file. 
 
-  Weird bug - every third button press seems to fire a shot. 
+- [ ] Implement Asteroids clone (of old game from 70:s) :milky_way:
+  - [ ]The shots seem to work now, but the game crashes after a few shots. Should try running with verbose output.
+  - [ ] Detect collision of bullets with asteroid.
+  - [ ] Delete asteroid upon collision.
+  - [ ] Detect collision of ship with asteroid.
+  - [ ] Life minus upon collision.
+  - [ ] Display life as three ships in top left corner.
+  - [ ] Display asteroids destroyed as score.
+  - [ ] Display 'game over' and quit to main menu after delay when ship is destroyed.
   Weird bug 2 - the game quits quickly when asteroid velocities are randomized in both directions (-4 -> 4). 
   
-- Implement Filips 'Asteroids' game as the fourth item on the menu.
-:milky_way:
+
 ### Whenever someone is inspired
 - Build (3D-print?) a holder for the screen. Or use a shoebox.
 - Screensaver using some of the cool pixel art from that person I follow on Mastodon, if its gpl or so. Thats probably not going to work, since the arduino can't store more than one 70x70 px picture. No memory.
