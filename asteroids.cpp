@@ -78,6 +78,10 @@ void translationMotionShots(int angle, int shotnumber);//increments position of 
 void drawShots();
 void eraseShot(int shotnumber);
 
+//collision functioner:
+void detectCollisionAsteroidShip(int asteroidX, int asteroidY);
+void detectCollisionAsteroidShot();
+
 void runAsteroids()
 {
   delay(4000); //to avoid buttonpress being registered immediately. 
@@ -101,6 +105,7 @@ void runAsteroids()
     shiftOrigin();
     if(buttonPressed())
     {
+      Serial.println("button pressed");
       shoot();
     }
     if(activeShots!=0)
@@ -115,6 +120,11 @@ void runAsteroids()
     drawShots();
     moveAsteroids();
     drawAsteroids();
+    for(int i =0;i<8;i++)
+    {
+      detectCollisionAsteroidShip(asteroidXOrigins[i],asteroidYOrigins[i]);
+    }
+    detectCollisionAsteroidShot();
   }
 }
 void setShipStartPos()
@@ -137,14 +147,15 @@ void setShipStartPos()
 void drawShip()
 {
   //From C to A:
-  Paint_DrawLine(Cx, Cy, Ax, Ay, WHITE, line_width, draw_fill);
+  Paint_DrawLineStorePixels(Cx, Cy, Ax, Ay, WHITE, line_width, draw_fill);
   //From A to B: 
-  Paint_DrawLine(Ax, Ay, Bx, By, WHITE, line_width, draw_fill);
+  Paint_DrawLineStorePixels(Ax, Ay, Bx, By, WHITE, line_width, draw_fill);
   // From B to C: 
-  Paint_DrawLine(Bx, By, Cx, Cy, WHITE, line_width, draw_fill);
+  Paint_DrawLineStorePixels(Bx, By, Cx, Cy, WHITE, line_width, draw_fill);
 }
 void eraseShip()
 {
+  clearStoredPixels();
   //From C to A:
   Paint_DrawLine(CxOld, CyOld, AxOld, AyOld, BLACK, line_width, 0);
   //From A to B: 
@@ -193,15 +204,6 @@ void translationMotionShots(int angle, int shotnumber)
   int shotSpeed = 10;
   int L = shotSpeed;
   int i = shotnumber;
-  Serial.println("shotnumber");
-  Serial.println(shotnumber);
-  //int temp2 = shotnumber-1;
-  Serial.println("Tr");
-  for(int temp=0;temp<8;temp++)
-  {
-  Serial.println(shotXCoordinates[temp]);
-  Serial.println(shotYCoordinates[temp]);
-  }
   double degree = (double)angle;
   double radian = (degree/180.0)*PI;
   int xBoost = (int)L*sin(radian);
@@ -214,30 +216,31 @@ void translationMotionShots(int angle, int shotnumber)
   if(shotXCoordinates[i] > 236)
   {
     eraseShot(i);
-    Serial.print("Active shots:");
-    Serial.println(activeShots);
-    Serial.println("one");
+    //Serial.print("Active shots:");
+   // Serial.println(activeShots);
+   // Serial.println("one");
   }
   else if(shotYCoordinates[i] > 316)
   {
     eraseShot(i);
-    Serial.print("Active shots:");
+   /* Serial.print("Active shots:");
     Serial.println(activeShots);
-    Serial.println("two");
+    Serial.println("two");*/
   }
   else if(shotXCoordinates[i] < 8)
   {
     eraseShot(i);
-    Serial.print("Active shots:");
+   /* Serial.print("Active shots:");
     Serial.println(activeShots);
-    Serial.println("three");
+    Serial.println("three");*/
   }    
   else if(shotYCoordinates[i] < 8)
   {
     eraseShot(i);
+    /*
     Serial.print("Active shots:");
     Serial.println(activeShots);
-    Serial.println("four");
+    Serial.println("four");*/
   }
 }
 void drawAsteroids()
@@ -251,18 +254,14 @@ void drawAsteroids()
 void drawShots()
 { 
   //Serial.println("in drawShots");
-  //Serial.print("Active shots: ");
-  //Serial.print(activeShots);
   if(activeShots != 0)
   {
     for(int i = 0;i<activeShots;i++)
     {
-      Paint_DrawPoint(shotXCoordinatesOld[i-1], shotYCoordinatesOld[i-1], BLACK,1,DOT_FILL_AROUND); 
-      Paint_DrawPoint(shotXCoordinates[i-1], shotYCoordinates[i-1], WHITE,1,DOT_FILL_AROUND);
-    // Serial.println("Have drawn shots");    
+      Paint_DrawPoint(shotXCoordinatesOld[i], shotYCoordinatesOld[i], BLACK,1,DOT_FILL_AROUND); 
+      Paint_DrawPoint(shotXCoordinates[i], shotYCoordinates[i], WHITE,1,DOT_FILL_AROUND);
     }
   }
- // Serial.println("Exiting drawShots");
 }
 void eraseShot(int i)
 {
@@ -305,7 +304,7 @@ void shoot()
   if(activeShots < 8)
   {
   activeShots++;
-  //Serial.println(activeShots);
+  Serial.println(activeShots);
   int i = activeShots;  
   shotAngles[i-1] = R;
   shotXCoordinates[i-1]=Ax;
@@ -313,8 +312,8 @@ void shoot()
   Serial.println("sh");
   for(int temp=0;temp<8;temp++)
   {
-  Serial.println(shotXCoordinates[temp]);
-  Serial.println(shotYCoordinates[temp]);
+ // Serial.println(shotXCoordinates[temp]);
+ // Serial.println(shotYCoordinates[temp]);
   }
  /* Serial.print("This is i: ");
   Serial.println(i);
@@ -371,5 +370,32 @@ void setVelocityAsteroids()
   { 
     asteroidXVelocity[i] = random(4);
     asteroidYVelocity[i] = random(4);
+  }
+}
+void detectCollisionAsteroidShip(int asteroidPositionX, int asteroidPositionY)
+{
+  int* xShip;
+  int* yShip;
+  xShip = returnStoredPixelsX();
+  yShip = returnStoredPixelsY();
+  for(int i = 0;i<100;i++)
+  { 
+    if((asteroidPositionX == xShip[i])&&(asteroidPositionY == yShip[i]))
+    {
+      Serial.println("Collision!");
+    }
+  }    
+}
+void detectCollisionAsteroidShot()
+{
+  for(int i = 0;i<8;i++)//Looping through each asteroid
+  { 
+    for(int j=0;j<8;j++)//Looping through each shot
+    {
+      if((abs(asteroidXOrigins[i] - shotXCoordinates[j])<3) && (abs(asteroidYOrigins[i] - shotYCoordinates[j])<3))
+      {
+        Serial.println("Hit!");
+      }
+    }
   }
 }

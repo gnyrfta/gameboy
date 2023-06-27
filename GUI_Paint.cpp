@@ -38,6 +38,9 @@
 #include <string.h> //memset()
 #include <math.h>
 
+static int storedPixelsX[100];
+static int storedPixelsY[100];
+
 volatile PAINT Paint;
 
 /******************************************************************************
@@ -289,7 +292,76 @@ void Paint_DrawLine(UWORD Xstart, UWORD Ystart, UWORD Xend, UWORD Yend,
         }
     }
 }
+/******************Davids function**********************************************/
+void Paint_DrawLineStorePixels(UWORD Xstart, UWORD Ystart, UWORD Xend, UWORD Yend, 
+                    UWORD Color, DOT_PIXEL Line_width, LINE_STYLE Line_Style)
+{
+    if (Xstart > Paint.Width || Ystart > Paint.Height ||
+        Xend > Paint.Width || Yend > Paint.Height) {
+        Debug("Paint_DrawLine Input exceeds the normal display range\r\n");
+        return;
+    }
 
+    UWORD Xpoint = Xstart;
+    UWORD Ypoint = Ystart;
+    int dx = (int)Xend - (int)Xstart >= 0 ? Xend - Xstart : Xstart - Xend;
+    int dy = (int)Yend - (int)Ystart <= 0 ? Yend - Ystart : Ystart - Yend;
+
+    // Increment direction, 1 is positive, -1 is counter;
+    int XAddway = Xstart < Xend ? 1 : -1;
+    int YAddway = Ystart < Yend ? 1 : -1;
+
+    //Cumulative error
+    int Esp = dx + dy;
+    char Dotted_Len = 0;
+    int i = 0;
+
+    for (;;) {
+        Dotted_Len++;
+        //Painted dotted line, 2 point is really virtual
+        if (Line_Style == LINE_STYLE_DOTTED && Dotted_Len % 3 == 0) {
+            //Debug("LINE_DOTTED\r\n");
+            Paint_DrawPoint(Xpoint, Ypoint, IMAGE_BACKGROUND, Line_width, DOT_STYLE_DFT);
+            storedPixelsX[i]=Xpoint;
+            storedPixelsY[i]=Ypoint;
+            Dotted_Len = 0;
+        } else {
+            Paint_DrawPoint(Xpoint, Ypoint, Color, Line_width, DOT_STYLE_DFT);
+            storedPixelsX[i]=Xpoint;
+            storedPixelsY[i]=Ypoint;
+        }
+        if (2 * Esp >= dy) {
+            if (Xpoint == Xend)
+                break;
+            Esp += dy;
+            Xpoint += XAddway;
+        }
+        if (2 * Esp <= dx) {
+            if (Ypoint == Yend)
+                break;
+            Esp += dx;
+            Ypoint += YAddway;
+        }
+        i++;
+    }
+}
+/*****************Davids function to get stored pixels*/
+int* returnStoredPixelsX()
+{
+  return storedPixelsX;
+}
+int* returnStoredPixelsY()
+{
+  return storedPixelsY;
+}
+void clearStoredPixels()
+{
+  for(int i=0;i<100;i++)
+  {
+    storedPixelsX[i]=1000;
+    storedPixelsY[i]=1000;
+  }
+}
 /******************************************************************************
 function:	Draw a rectangle
 parameter:

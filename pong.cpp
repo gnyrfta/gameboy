@@ -18,11 +18,11 @@ int draw_fill = DOT_FILL_AROUND;
 
 //Padel values
 int padelOneXstart = 0;
-int padelOneXend = 4;
+int padelOneXend = 2;
 int padelOneYstart = 140;
 int padelOneYend = 180;
 
-int padelTwoXstart = 236;
+int padelTwoXstart = 238;
 int padelTwoXend = 240;
 int padelTwoYstart = 140;
 int padelTwoYend = 180;
@@ -33,7 +33,7 @@ int background = WHITE;
 
 int yValuePong{0};//reads the potentiometer value from the joystick in the y-direction.
 int xValuePong{0}; //reads the potentiometer value from the joystick in the x-direction. Only used because joystick function wants both x and y values.
-int cursorYPong{0}; //Position of cursor in the y-direction.
+int cursorYPong{120}; //Position of cursor in the y-direction.
 int cursorYOldPong{0};//Previous position of cursor in the y-direction.
 int cursorXPong{0}; //Position of cursor in the y-direction.
 int cursorXOldPong{0};//Previous position of cursor in the y-direction.
@@ -62,6 +62,7 @@ void runPong()
   travellingLeft=false;
   x_center=120;
   y_center=160;
+  cursorYPong=120;
   int x_center_old = x_center;
   int y_center_old = y_center;
   int storeValueRightPadel=padelTwoYstart;
