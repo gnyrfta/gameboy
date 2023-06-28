@@ -53,3 +53,23 @@ In DEV_Config the baud rate is set to 115200 bit/second, so the serial monitor n
 - Build (3D-print?) a holder for the screen. Or use a shoebox.
 - Screensaver using some of the cool pixel art from that person I follow on Mastodon, if its gpl or so. Thats probably not going to work, since the arduino can't store more than one 70x70 px picture. No memory.
 Maybe with an external SD-card. 
+
+
+Try removing adapter cord and just adding that little metal thing to the cable.
+
+Problems asteroids:
+	 Double shots every time the button is pressed and one of the shots gets stuck instead of being erased.
+	 Freezes sometimes. Possibly connected to that activeShots outputs a negative number, which it shouldnt.
+	 Probably has to do with the shots, when not shooting the program runs smoothly.
+	 After a hit, activeShots decreases. How can there be a hit when activeShots is -3? 
+	 Asteroids are only partially deleted when hit.
+
+	 One asteroid is fixed in place.
+
+	 The freeze seems to happen sometimes when a shot exits.
+	 Gets stuck in translationMotionShots, when i = 0.
+
+	 Maybe the problem is gone now. Probably not.
+
+	 Start here: print 'game over' and score when collision occurs.
+	 Then start debugging from the top.

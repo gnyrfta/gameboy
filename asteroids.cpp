@@ -1,6 +1,7 @@
 #include "GUI_Paint.h";
 #include <math.h>;
 #include "joystick.h";
+#include "fonts.h";
 
 //Used for all shapes:
 static int line_width = DOT_PIXEL_DFT;    
@@ -54,6 +55,9 @@ static int shotYCoordinatesOld[8] = {0,0,0,0,0,0,0,0};//
 static int shotAngles[8] = {0,0,0,0,0,0,0,0};
 static int activeShots = 0;
 
+//Score specs:
+static int score{0};
+
 //Input function:
 void readJoyStickAsteroids(); //Asteroids here refers to the game, not to the asteroids.
 
@@ -71,6 +75,7 @@ void positionAsteroids();
 void setVelocityAsteroids();
 void moveAsteroids();
 void drawAsteroids();
+void repositionAsteroid(int i);
 
 //Shot functions: 
 void shoot();
@@ -78,9 +83,12 @@ void translationMotionShots(int angle, int shotnumber);//increments position of 
 void drawShots();
 void eraseShot(int shotnumber);
 
-//collision functioner:
+//collision functions:
 void detectCollisionAsteroidShip(int asteroidX, int asteroidY);
 void detectCollisionAsteroidShot();
+
+//Score functions:
+void displayScore();
 
 void runAsteroids()
 {
@@ -113,6 +121,8 @@ void runAsteroids()
       for (int i = 0;i<activeShots;i++)
       {
         translationMotionShots(shotAngles[i],i);
+        Serial.println("i is: ");
+        Serial.println(i);
       }
     }
     eraseShip();
@@ -125,6 +135,7 @@ void runAsteroids()
       detectCollisionAsteroidShip(asteroidXOrigins[i],asteroidYOrigins[i]);
     }
     detectCollisionAsteroidShot();
+    displayScore();
   }
 }
 void setShipStartPos()
@@ -201,6 +212,7 @@ void translationMotion() //Calculates how far the ship should move each loop.
 }
 void translationMotionShots(int angle, int shotnumber)
 {
+  Serial.println("Entering tr");
   int shotSpeed = 10;
   int L = shotSpeed;
   int i = shotnumber;
@@ -212,36 +224,44 @@ void translationMotionShots(int angle, int shotnumber)
   shotYCoordinatesOld[i] = shotYCoordinates[i];
   shotXCoordinates[i] += xBoost;
   shotYCoordinates[i] += yBoost;
-
-  if(shotXCoordinates[i] > 236)
+  if(!((shotXCoordinates[i] == 0) && (shotYCoordinates[i] == 0))) //0,0 means shot is not active.
   {
-    eraseShot(i);
-    //Serial.print("Active shots:");
-   // Serial.println(activeShots);
-   // Serial.println("one");
+    Serial.println("Entering deletion section");
+    Serial.println("This is shotXCoord");
+    Serial.println(shotXCoordinates[i]);
+    Serial.println("shotycoords");
+    Serial.println(shotYCoordinates[i]);
+    if(shotXCoordinates[i] > 236)
+    {
+      eraseShot(i);
+      //Serial.print("Active shots:");
+    // Serial.println(activeShots);
+     Serial.println("one");
+    }
+    else if(shotYCoordinates[i] > 316)
+    {
+      eraseShot(i);
+    /* Serial.print("Active shots:");
+      Serial.println(activeShots);*/
+      Serial.println("two");
+    }
+    else if(shotXCoordinates[i] < 8)
+    {
+      eraseShot(i);
+    /* Serial.print("Active shots:");
+      Serial.println(activeShots);*/
+      Serial.println("three");
+    }    
+    else if(shotYCoordinates[i] < 8)
+    {
+      eraseShot(i);
+      /*
+      Serial.print("Active shots:");
+      Serial.println(activeShots);*/
+      Serial.println("four");
+    }
   }
-  else if(shotYCoordinates[i] > 316)
-  {
-    eraseShot(i);
-   /* Serial.print("Active shots:");
-    Serial.println(activeShots);
-    Serial.println("two");*/
-  }
-  else if(shotXCoordinates[i] < 8)
-  {
-    eraseShot(i);
-   /* Serial.print("Active shots:");
-    Serial.println(activeShots);
-    Serial.println("three");*/
-  }    
-  else if(shotYCoordinates[i] < 8)
-  {
-    eraseShot(i);
-    /*
-    Serial.print("Active shots:");
-    Serial.println(activeShots);
-    Serial.println("four");*/
-  }
+  Serial.println("exiting tr");
 }
 void drawAsteroids()
 { 
@@ -272,7 +292,9 @@ void eraseShot(int i)
     shotYCoordinates[i]=0;
     shotXCoordinatesOld[i]=0;
     shotYCoordinatesOld[i]=0;
-    shotAngles[i] = 0;   
+    shotAngles[i] = 0;
+    Serial.println("Shot erased. Amount of active shots: ");
+    Serial.println(activeShots);   
 }
 void readJoyStickAsteroids()
 {
@@ -310,17 +332,7 @@ void shoot()
   shotXCoordinates[i-1]=Ax;
   shotYCoordinates[i-1]=Ay;
   Serial.println("sh");
-  for(int temp=0;temp<8;temp++)
-  {
- // Serial.println(shotXCoordinates[temp]);
- // Serial.println(shotYCoordinates[temp]);
   }
- /* Serial.print("This is i: ");
-  Serial.println(i);
-  Serial.println(shotAngles[i-1]);
-  Serial.println(shotXCoordinates[i-1]);
-  Serial.println(shotYCoordinates[i-1]);
-*/  }
 
   //Serial.println("Exiting shoot");    
 }
@@ -395,7 +407,37 @@ void detectCollisionAsteroidShot()
       if((abs(asteroidXOrigins[i] - shotXCoordinates[j])<3) && (abs(asteroidYOrigins[i] - shotYCoordinates[j])<3))
       {
         Serial.println("Hit!");
+        score++;
+        //eraseShot(j);//Consider taking this away.
+        repositionAsteroid(i);
       }
     }
   }
+}
+void displayScore()
+{
+  Paint_DrawNum(200,20,score, &Font16, BLACK, WHITE);
+}
+void repositionAsteroid(int j)
+{
+  asteroidXOrigins[j] = random(10, 230); //Reposition asteroid.
+  asteroidYOrigins[j] = random(10, 310);
+  /*
+  do
+  {
+  asteroidXOrigins[j] = random(10, 230); //Reposition asteroid.
+  asteroidYOrigins[j] = random(10, 310);
+    for(int a = 0;a<8;a++) //Check if there is already an asteroid in that position.
+    {
+      if(a==j){a++;}
+      if(((asteroidXOrigins[j] - asteroidXOrigins[a])  < 3 ) && ((asteroidYOrigins[j] - asteroidYOrigins[a])  < 3 ))
+      {
+        asteroidXOrigins[j] = random(10, 230); //Reposition asteroid.
+        asteroidYOrigins[j] = random(10, 310);
+        a=0;
+      }
+    }
+  }
+  while(((asteroidXOrigins[j]-xOrigin)>10) && (asteroidYOrigins[j]-yOrigin) > 10);//Check that the asteroid does not respawn to close to the ship.*/
+  Paint_DrawPoint(asteroidXOriginsOld[j], asteroidYOriginsOld[j], BLACK,3,DOT_FILL_AROUND); //Overwrite position where asteroid was hit.
 }
