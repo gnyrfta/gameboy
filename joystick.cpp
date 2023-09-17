@@ -138,3 +138,7 @@ void setCursorSpeed(int speed)
 {
   cursorSpeed = speed;
 }
+void runLoop()
+{
+  button.loop();
+}

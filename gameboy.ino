@@ -69,34 +69,34 @@ void loop() //Presents the menu and if 'Mandelbrot' is clicked it starts drawing
   {
     if(30>cursorY)
     {
-      Paint_DrawString_EN(30, 10, "Mandelbrot", &Font24, BLUE, WHITE);//Show that the button has been pressed. 
+      Paint_DrawString_EN(10, 10, "Etch a Sketch", &Font24, BLUE, WHITE);//Show that the button has been pressed. 
       delay(200);
-      drawMandelbrot=true;
+      etchASketch=true;
     } 
     else if((cursorY>30) && (cursorY<50))
     {
-      Paint_DrawString_EN(30,30, "Gradient", &Font24, BLUE, WHITE);
-      delay(200);
-      drawGradient=true;
-    }
-    else if((cursorY>50) && (cursorY<70))
-    {
-      Paint_DrawString_EN(10,50, "Etch a Sketch", &Font24, BLUE, WHITE);
-      delay(500);
-      etchASketch=true;
-    }
-    else if((cursorY>70) && (cursorY<90))
-    {
-      Paint_DrawString_EN(30,70, "Pong", &Font24, BLUE, WHITE);
+      Paint_DrawString_EN(30,30, "Pong", &Font24, BLUE, WHITE);
       delay(200);
       playPong=true;
     }
-    else if((cursorY>90) && (cursorY<110))
+    else if((cursorY>50) && (cursorY<70))
+    {
+      Paint_DrawString_EN(30,50, "Asteroids", &Font24, BLUE, WHITE);
+      delay(500);
+      playAsteroids=true;
+    }
+    else if((cursorY>70) && (cursorY<90))
+    {
+      Paint_DrawString_EN(30, 70, "Mandelbrot", &Font24, BLUE, WHITE);
+      delay(200);
+      drawMandelbrot=true;
+    }
+   /* else if((cursorY>90) && (cursorY<110))
     {
       Paint_DrawString_EN(30,90, "Asteroids", &Font24, BLUE, WHITE);
       delay(200);
       playAsteroids=true;
-    }
+    }*/
   }
   if(!(cursorX==cursorXOld && cursorY==cursorYOld)) // If the cursor has moved.
   {
@@ -104,11 +104,13 @@ void loop() //Presents the menu and if 'Mandelbrot' is clicked it starts drawing
      {
        if(!((30>cursorYOld) && (cursorYOld>10)))
         {
-          Paint_DrawString_EN(30, 10, "Mandelbrot", &Font24, WHITE, BLUE);
-          Paint_DrawString_EN(30,30, "Gradient", &Font24, WHITE, BLACK);
-          Paint_DrawString_EN(10,50,"Etch a sketch", &Font24, WHITE, BLACK);
-          Paint_DrawString_EN(30,70,"Pong", &Font24, WHITE, BLACK);
-          Paint_DrawString_EN(30,90,"Asteroids", &Font24, WHITE, BLACK);
+         // Paint_DrawString_EN(30, 10, "Mandelbrot", &Font24, WHITE, BLUE);
+         // Paint_DrawString_EN(30,30, "Gradient", &Font24, WHITE, BLACK);
+          Paint_DrawString_EN(10,10,"Etch a sketch", &Font24, WHITE, BLUE);
+          Paint_DrawString_EN(30,30,"Pong", &Font24, WHITE, BLACK);
+          Paint_DrawString_EN(30,50,"Asteroids", &Font24, WHITE, BLACK);
+          Paint_DrawString_EN(30, 70, "Mandelbrot", &Font24, WHITE, BLACK);
+
 
         }
      }
@@ -116,11 +118,11 @@ void loop() //Presents the menu and if 'Mandelbrot' is clicked it starts drawing
      {
       if(!((50>cursorYOld) && (cursorYOld>30)))
       {
-        Paint_DrawString_EN(30, 10, "Mandelbrot", &Font24, WHITE, BLACK);
-        Paint_DrawString_EN(30,30, "Gradient", &Font24, WHITE, BLUE);
-        Paint_DrawString_EN(10,50,"Etch a sketch", &Font24, WHITE, BLACK);
-        Paint_DrawString_EN(30,70,"Pong", &Font24, WHITE, BLACK);
-        Paint_DrawString_EN(30,90,"Asteroids", &Font24, WHITE, BLACK);
+          Paint_DrawString_EN(10,10,"Etch a sketch", &Font24, WHITE, BLACK);
+          Paint_DrawString_EN(30,30,"Pong", &Font24, WHITE, BLUE);
+          Paint_DrawString_EN(30,50,"Asteroids", &Font24, WHITE, BLACK);
+          Paint_DrawString_EN(30, 70, "Mandelbrot", &Font24, WHITE, BLACK);
+
 
       }
      }
@@ -128,38 +130,34 @@ void loop() //Presents the menu and if 'Mandelbrot' is clicked it starts drawing
      {
       if(!((70>cursorYOld) && (cursorYOld>50)))
       {
-        Paint_DrawString_EN(30, 10, "Mandelbrot", &Font24, WHITE, BLACK);
-        Paint_DrawString_EN(30,30, "Gradient", &Font24, WHITE, BLACK);
-        Paint_DrawString_EN(10,50,"Etch a sketch", &Font24, WHITE, BLUE);
-        Paint_DrawString_EN(30,70,"Pong", &Font24, WHITE, BLACK);
-        Paint_DrawString_EN(30,90,"Asteroids", &Font24, WHITE, BLACK);
+          Paint_DrawString_EN(10,10,"Etch a sketch", &Font24, WHITE, BLACK);
+          Paint_DrawString_EN(30,30,"Pong", &Font24, WHITE, BLACK);
+          Paint_DrawString_EN(30,50,"Asteroids", &Font24, WHITE, BLUE);
+          Paint_DrawString_EN(30, 70, "Mandelbrot", &Font24, WHITE, BLACK);
+
 
       }
      }
-      else if((90>cursorY) && (cursorY>70))
+     else if((90>cursorY) && (cursorY>70))
      {
       if(!((90>cursorYOld) && (cursorYOld>70)))
       {
-        Paint_DrawString_EN(30, 10, "Mandelbrot", &Font24, WHITE, BLACK);
-        Paint_DrawString_EN(30,30, "Gradient", &Font24, WHITE, BLACK);
-        Paint_DrawString_EN(10,50,"Etch a sketch", &Font24, WHITE, BLACK);
-        Paint_DrawString_EN(30,70,"Pong", &Font24, WHITE, BLUE);
-        Paint_DrawString_EN(30,90,"Asteroids", &Font24, WHITE, BLACK);
+          Paint_DrawString_EN(10,10,"Etch a sketch", &Font24, WHITE, BLACK);
+          Paint_DrawString_EN(30,30,"Pong", &Font24, WHITE, BLACK);
+          Paint_DrawString_EN(30,50,"Asteroids", &Font24, WHITE, BLACK);
+          Paint_DrawString_EN(30, 70, "Mandelbrot", &Font24, WHITE, BLUE);
 
       }
      }
-      else if((110>cursorY) && (cursorY>90))
+     /* else if((110>cursorY) && (cursorY>90))
      {
       if(!((110>cursorYOld) && (cursorYOld>90)))
       {
-        Paint_DrawString_EN(30, 10, "Mandelbrot", &Font24, WHITE, BLACK);
-        Paint_DrawString_EN(30,30, "Gradient", &Font24, WHITE, BLACK);
-        Paint_DrawString_EN(10,50,"Etch a sketch", &Font24, WHITE, BLACK);
-        Paint_DrawString_EN(30,70,"Pong", &Font24, WHITE, BLACK);
-        Paint_DrawString_EN(30,90,"Asteroids", &Font24, WHITE, BLUE);
-
+          Paint_DrawString_EN(10,10,"Etch a sketch", &Font24, WHITE, BLACK);
+          Paint_DrawString_EN(30,30,"Pong", &Font24, WHITE, BLACK);
+          Paint_DrawString_EN(30,50,"Asteroids", &Font24, WHITE, BLACK);
       }
-     }
+     }*/
   }
   if(drawMandelbrot)
   {
@@ -230,10 +228,11 @@ void drawStartMenu()
   LCD_Clear(0xffff);
   Paint_NewImage(LCD_WIDTH, LCD_HEIGHT, 0, WHITE);
   Paint_Clear(WHITE);
-  Paint_DrawString_EN(30, 10, "Mandelbrot", &Font24, WHITE, BLACK);
-  Paint_DrawString_EN(30,30, "Gradient", &Font24, WHITE, BLACK);
-  Paint_DrawString_EN(10,50,"Etch a sketch", &Font24, WHITE, BLACK);
-  Paint_DrawString_EN(30,70,"Pong", &Font24, WHITE, BLACK);
-  Paint_DrawString_EN(30,90,"Asteroids", &Font24, WHITE, BLACK);
+ //Paint_DrawString_EN(30, 10, "Mandelbrot", &Font24, WHITE, BLACK);
+//Paint_DrawString_EN(30,30, "Gradient", &Font24, WHITE, BLACK);
+  Paint_DrawString_EN(10,10,"Etch a sketch", &Font24, WHITE, BLACK);
+  Paint_DrawString_EN(30,30,"Pong", &Font24, WHITE, BLACK);
+  Paint_DrawString_EN(30,50,"Asteroids", &Font24, WHITE, BLACK);
+  Paint_DrawString_EN(30, 70, "Mandelbrot", &Font24, WHITE, BLACK);
 }
 #endif

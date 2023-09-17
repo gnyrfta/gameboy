@@ -2,6 +2,7 @@
 #include <math.h>;
 #include "joystick.h";
 #include "fonts.h";
+#include "typeconversions.h"
 
 //Used for all shapes:
 static int line_width = DOT_PIXEL_DFT;    
@@ -57,6 +58,7 @@ static int activeShots = 0;
 
 //Score specs:
 static int score{0};
+static bool alive{true};
 
 //Input function:
 void readJoyStickAsteroids(); //Asteroids here refers to the game, not to the asteroids.
@@ -90,16 +92,20 @@ void detectCollisionAsteroidShot();
 //Score functions:
 void displayScore();
 
+void introAnimation();
 void runAsteroids()
-{
-  delay(4000); //to avoid buttonpress being registered immediately. 
+{ 
+  alive=true;
+  introAnimation();
+  runLoop();
   setShipStartPos();
   drawShip();
   activeShots = 0;
   positionAsteroids();
   setVelocityAsteroids();
-
-  while(true)
+  readJoyStickButton();
+  unsigned long time = millis();
+  while(alive)
   {
     AxOld = Ax;
     AyOld = Ay;
@@ -111,18 +117,20 @@ void runAsteroids()
     translationMotion();
     rotateShip(); //Function only rotates if R has changed. 
     shiftOrigin();
-    if(buttonPressed())
+    if(buttonReleased())
     {
-      Serial.println("button pressed");
+      if(abs(millis()-time) > 1000)
+      {
+      Serial.println("button released");
+      Serial.println("Going to shoot.");
       shoot();
+      }
     }
     if(activeShots!=0)
     {
       for (int i = 0;i<activeShots;i++)
       {
         translationMotionShots(shotAngles[i],i);
-        Serial.println("i is: ");
-        Serial.println(i);
       }
     }
     eraseShip();
@@ -212,7 +220,7 @@ void translationMotion() //Calculates how far the ship should move each loop.
 }
 void translationMotionShots(int angle, int shotnumber)
 {
-  Serial.println("Entering tr");
+ // Serial.println("Entering tr");
   int shotSpeed = 10;
   int L = shotSpeed;
   int i = shotnumber;
@@ -224,33 +232,32 @@ void translationMotionShots(int angle, int shotnumber)
   shotYCoordinatesOld[i] = shotYCoordinates[i];
   shotXCoordinates[i] += xBoost;
   shotYCoordinates[i] += yBoost;
+  if((xBoost == 0) && (yBoost == 0))
+  {
+    Serial.println("Shot stuck!");
+  }
   if(!((shotXCoordinates[i] == 0) && (shotYCoordinates[i] == 0))) //0,0 means shot is not active.
   {
-    Serial.println("Entering deletion section");
-    Serial.println("This is shotXCoord");
-    Serial.println(shotXCoordinates[i]);
-    Serial.println("shotycoords");
-    Serial.println(shotYCoordinates[i]);
     if(shotXCoordinates[i] > 236)
     {
       eraseShot(i);
       //Serial.print("Active shots:");
     // Serial.println(activeShots);
-     Serial.println("one");
+   //  Serial.println("one");
     }
     else if(shotYCoordinates[i] > 316)
     {
       eraseShot(i);
     /* Serial.print("Active shots:");
       Serial.println(activeShots);*/
-      Serial.println("two");
+     // Serial.println("two");
     }
     else if(shotXCoordinates[i] < 8)
     {
       eraseShot(i);
     /* Serial.print("Active shots:");
       Serial.println(activeShots);*/
-      Serial.println("three");
+   //   Serial.println("three");
     }    
     else if(shotYCoordinates[i] < 8)
     {
@@ -258,10 +265,10 @@ void translationMotionShots(int angle, int shotnumber)
       /*
       Serial.print("Active shots:");
       Serial.println(activeShots);*/
-      Serial.println("four");
+    //  Serial.println("four");
     }
   }
-  Serial.println("exiting tr");
+ // Serial.println("exiting tr");
 }
 void drawAsteroids()
 { 
@@ -273,7 +280,7 @@ void drawAsteroids()
 }
 void drawShots()
 { 
-  //Serial.println("in drawShots");
+ // Serial.println("in drawShots");
   if(activeShots != 0)
   {
     for(int i = 0;i<activeShots;i++)
@@ -282,9 +289,11 @@ void drawShots()
       Paint_DrawPoint(shotXCoordinates[i], shotYCoordinates[i], WHITE,1,DOT_FILL_AROUND);
     }
   }
+ // Serial.println("Exiting drawShots");
 }
 void eraseShot(int i)
 {
+   // Serial.println("In eraseShot");
     Paint_DrawPoint(shotXCoordinatesOld[i], shotYCoordinatesOld[i], BLACK,1,DOT_FILL_AROUND);
     Paint_DrawPoint(shotXCoordinates[i], shotYCoordinates[i], BLACK,1,DOT_FILL_AROUND); 
     activeShots--;
@@ -293,8 +302,9 @@ void eraseShot(int i)
     shotXCoordinatesOld[i]=0;
     shotYCoordinatesOld[i]=0;
     shotAngles[i] = 0;
-    Serial.println("Shot erased. Amount of active shots: ");
-    Serial.println(activeShots);   
+   // Serial.println("Shot erased. Amount of active shots: ");
+   // Serial.println(activeShots);  
+ //  Serial.println("exiting eraseShot");
 }
 void readJoyStickAsteroids()
 {
@@ -306,7 +316,7 @@ void readJoyStickAsteroids()
   setCommand(xValueShip,yValueShip);//Sets command to left,right, up or down.
   R = changeAngle();
   speedShip = changeOriginSpeed();
-  readJoyStickButton();
+  int temp = readJoyStickButton();
 } 
 void rotateShip()
 { 
@@ -326,15 +336,13 @@ void shoot()
   if(activeShots < 8)
   {
   activeShots++;
-  Serial.println(activeShots);
+//  Serial.println(activeShots);
   int i = activeShots;  
   shotAngles[i-1] = R;
   shotXCoordinates[i-1]=Ax;
   shotYCoordinates[i-1]=Ay;
-  Serial.println("sh");
+ // Serial.println("sh");
   }
-
-  //Serial.println("Exiting shoot");    
 }
 void moveAsteroids()
 { 
@@ -392,9 +400,14 @@ void detectCollisionAsteroidShip(int asteroidPositionX, int asteroidPositionY)
   yShip = returnStoredPixelsY();
   for(int i = 0;i<100;i++)
   { 
-    if((asteroidPositionX == xShip[i])&&(asteroidPositionY == yShip[i]))
+    if(((abs(asteroidPositionX - xShip[i]))<3)&&(abs(asteroidPositionY - yShip[i])<3))
     {
       Serial.println("Collision!");
+        Paint_DrawString_EN(30, 10, "Game Over", &Font24, BLACK, WHITE);
+        Paint_DrawString_EN(30, 30, "Score: ", &Font24, BLACK, WHITE);
+        Paint_DrawString_EN(140, 30, toString(score), &Font24, BLACK, WHITE);
+        delay(3000);
+        alive = false;
     }
   }    
 }
@@ -404,10 +417,11 @@ void detectCollisionAsteroidShot()
   { 
     for(int j=0;j<8;j++)//Looping through each shot
     {
-      if((abs(asteroidXOrigins[i] - shotXCoordinates[j])<3) && (abs(asteroidYOrigins[i] - shotYCoordinates[j])<3))
+      if((abs(asteroidXOrigins[i] - shotXCoordinates[j])<6) && (abs(asteroidYOrigins[i] - shotYCoordinates[j])<6))
       {
-        Serial.println("Hit!");
+       // Serial.println("Hit!");
         score++;
+        Paint_DrawPoint(asteroidXOrigins[i], asteroidYOrigins[i], BLACK,4,DOT_FILL_AROUND); 
         //eraseShot(j);//Consider taking this away.
         repositionAsteroid(i);
       }
@@ -440,4 +454,42 @@ void repositionAsteroid(int j)
   }
   while(((asteroidXOrigins[j]-xOrigin)>10) && (asteroidYOrigins[j]-yOrigin) > 10);//Check that the asteroid does not respawn to close to the ship.*/
   Paint_DrawPoint(asteroidXOriginsOld[j], asteroidYOriginsOld[j], BLACK,3,DOT_FILL_AROUND); //Overwrite position where asteroid was hit.
+}
+void introAnimation()
+{
+  Paint_DrawString_EN(110, 120, "A", &Font24, BLACK, WHITE);//Show that the button has been pressed. 
+  delay(250); //to avoid buttonpress being registered immediately. 
+  Paint_DrawString_EN(110, 120, "A", &Font24, BLACK, BLACK);//Show that the button has been pressed. 
+
+  Paint_DrawString_EN(110, 120, "S", &Font24, BLACK, WHITE);//Show that the button has been pressed. 
+  delay(250); //to avoid buttonpress being registered immediately. 
+  Paint_DrawString_EN(110, 120, "S", &Font24, BLACK, BLACK);//Show that the button has been pressed. 
+
+  Paint_DrawString_EN(110, 120, "T", &Font24, BLACK, WHITE);//Show that the button has been pressed. 
+  delay(250); //to avoid buttonpress being registered immediately. 
+  Paint_DrawString_EN(110, 120, "T", &Font24, BLACK, BLACK);//Show that the button has been pressed. 
+
+  Paint_DrawString_EN(110, 120, "E", &Font24, BLACK, WHITE);//Show that the button has been pressed. 
+  delay(250); //to avoid buttonpress being registered immediately. 
+  Paint_DrawString_EN(110, 120, "E", &Font24, BLACK, BLACK);//Show that the button has been pressed. 
+
+  Paint_DrawString_EN(110, 120, "R", &Font24, BLACK, WHITE);//Show that the button has been pressed. 
+  delay(250); //to avoid buttonpress being registered immediately. 
+  Paint_DrawString_EN(110, 120, "R", &Font24, BLACK, BLACK);//Show that the button has been pressed. 
+
+  Paint_DrawString_EN(110, 120, "O", &Font24, BLACK, WHITE);//Show that the button has been pressed. 
+  delay(250); //to avoid buttonpress being registered immediately. 
+  Paint_DrawString_EN(110, 120, "O", &Font24, BLACK, BLACK);//Show that the button has been pressed. 
+
+  Paint_DrawString_EN(110, 120, "I", &Font24, BLACK, WHITE);//Show that the button has been pressed. 
+  delay(250); //to avoid buttonpress being registered immediately. 
+  Paint_DrawString_EN(110, 120, "I", &Font24, BLACK, BLACK);//Show that the button has been pressed. 
+
+  Paint_DrawString_EN(110, 120, "D", &Font24, BLACK, WHITE);//Show that the button has been pressed. 
+  delay(250); //to avoid buttonpress being registered immediately. 
+  Paint_DrawString_EN(110, 120, "D", &Font24, BLACK, BLACK);//Show that the button has been pressed. 
+
+  Paint_DrawString_EN(110, 120, "S", &Font24, BLACK, WHITE);//Show that the button has been pressed. 
+  delay(250); //to avoid buttonpress being registered immediately. 
+  Paint_DrawString_EN(110, 120, "S", &Font24, BLACK, BLACK);//Show that the button has been pressed. 
 }

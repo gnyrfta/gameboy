@@ -128,7 +128,9 @@ void runPong()
     }
     if((y_center<=2)||(y_center>=320)) //Bounce according to law of reflection against roof and floor. 
     {
-      angle = angle*-1;      
+      angle = angle*-1;
+      Serial.println("This is angle ");
+      Serial.println(angle);      
     }
     if(travellingRight)
     {
