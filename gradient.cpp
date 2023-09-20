@@ -1,3 +1,5 @@
+//Draws a gradient, uncomment to use. 
+/*
 #include <stdint.h>
 #include "colourconversions.h"
 #include "GUI_Paint.h"
@@ -39,4 +41,4 @@ void HSVCycle()
 				}
 
 		}
-}
+}*/

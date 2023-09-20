@@ -18,13 +18,17 @@ In DEV_Config the baud rate is set to 115200 bit/second, so the serial monitor n
 #include "GUI_Paint.h"
 #include "LCD_Driver.h"
 #include <math.h>        // std::abs
-#include "mandelbrot.h"
-#include "gradient.h"
+//#include "mandelbrot.h"
 #include "colourconversions.h"
 #include "joystick.h"
 #include "etchasketch.h"
 #include "pong.h"
 #include "asteroids.h"
+//Neopixel stuffs
+#include <Adafruit_NeoPixel.h>
+#define LED_PIN 4
+#define LED_COUNT 10
+Adafruit_NeoPixel strip(LED_COUNT, LED_PIN, NEO_GRB + NEO_KHZ800);
 
 using namespace std;
 
@@ -37,11 +41,12 @@ int cursorY{0};
 int cursorXOld{0};
 int cursorYOld{0};
 
-bool drawMandelbrot{false};
+//bool drawMandelbrot{false};
 bool playAsteroids{false};
 bool etchASketch{false};
 bool playPong{false};
 bool drawGradient{false};
+bool pixelsOn{false};
 
 
 void setup() 
@@ -50,6 +55,10 @@ void setup()
   LCD_Init();
   joyStickInit();
   drawStartMenu();
+  //Neopixel stuffs:
+  strip.begin();           // INITIALIZE NeoPixel strip object (REQUIRED)
+  strip.show();            // Turn OFF all pixels ASAP
+  strip.setBrightness(50); // Set BRIGHTNESS to about 1/5 (max = 255)
 }
 
 void loop() //Presents the menu and if 'Mandelbrot' is clicked it starts drawing the Mandelbrot set. 
@@ -85,18 +94,30 @@ void loop() //Presents the menu and if 'Mandelbrot' is clicked it starts drawing
       delay(500);
       playAsteroids=true;
     }
-    else if((cursorY>70) && (cursorY<90))
+    /*else if((cursorY>70) && (cursorY<90))
     {
       Paint_DrawString_EN(30, 70, "Mandelbrot", &Font24, BLUE, WHITE);
       delay(200);
       drawMandelbrot=true;
-    }
-   /* else if((cursorY>90) && (cursorY<110))
-    {
-      Paint_DrawString_EN(30,90, "Asteroids", &Font24, BLUE, WHITE);
-      delay(200);
-      playAsteroids=true;
     }*/
+    else if((cursorY>90) && (cursorY<110))
+    {
+      Paint_DrawString_EN(30,90, "Neopixels", &Font24, BLUE, WHITE);
+      delay(200);
+      if(!pixelsOn)
+      {
+      pixelsOn=true;
+      strip.setBrightness(50);
+      delay(200);
+      }
+      else if(pixelsOn)
+      {
+        pixelsOn=false;
+        Paint_DrawString_EN(30,90, "Neopixels", &Font24, WHITE, BLACK);
+        colorWipe(strip.Color(  0,   0, 0), 0); // Black
+        delay(500);
+      }
+    }
   }
   if(!(cursorX==cursorXOld && cursorY==cursorYOld)) // If the cursor has moved.
   {
@@ -109,7 +130,9 @@ void loop() //Presents the menu and if 'Mandelbrot' is clicked it starts drawing
           Paint_DrawString_EN(10,10,"Etch a sketch", &Font24, WHITE, BLUE);
           Paint_DrawString_EN(30,30,"Pong", &Font24, WHITE, BLACK);
           Paint_DrawString_EN(30,50,"Asteroids", &Font24, WHITE, BLACK);
-          Paint_DrawString_EN(30, 70, "Mandelbrot", &Font24, WHITE, BLACK);
+         // Paint_DrawString_EN(30, 70, "Mandelbrot", &Font24, WHITE, BLACK);
+          Paint_DrawString_EN(30,90, "Neopixels", &Font24, WHITE, BLACK);
+
 
 
         }
@@ -121,9 +144,8 @@ void loop() //Presents the menu and if 'Mandelbrot' is clicked it starts drawing
           Paint_DrawString_EN(10,10,"Etch a sketch", &Font24, WHITE, BLACK);
           Paint_DrawString_EN(30,30,"Pong", &Font24, WHITE, BLUE);
           Paint_DrawString_EN(30,50,"Asteroids", &Font24, WHITE, BLACK);
-          Paint_DrawString_EN(30, 70, "Mandelbrot", &Font24, WHITE, BLACK);
-
-
+        //  Paint_DrawString_EN(30, 70, "Mandelbrot", &Font24, WHITE, BLACK);
+          Paint_DrawString_EN(30,90, "Neopixels", &Font24, WHITE, BLACK);
       }
      }
       else if((70>cursorY) && (cursorY>50))
@@ -133,9 +155,8 @@ void loop() //Presents the menu and if 'Mandelbrot' is clicked it starts drawing
           Paint_DrawString_EN(10,10,"Etch a sketch", &Font24, WHITE, BLACK);
           Paint_DrawString_EN(30,30,"Pong", &Font24, WHITE, BLACK);
           Paint_DrawString_EN(30,50,"Asteroids", &Font24, WHITE, BLUE);
-          Paint_DrawString_EN(30, 70, "Mandelbrot", &Font24, WHITE, BLACK);
-
-
+        //  Paint_DrawString_EN(30, 70, "Mandelbrot", &Font24, WHITE, BLACK);
+          Paint_DrawString_EN(30,90, "Neopixels", &Font24, WHITE, BLACK);
       }
      }
      else if((90>cursorY) && (cursorY>70))
@@ -145,21 +166,23 @@ void loop() //Presents the menu and if 'Mandelbrot' is clicked it starts drawing
           Paint_DrawString_EN(10,10,"Etch a sketch", &Font24, WHITE, BLACK);
           Paint_DrawString_EN(30,30,"Pong", &Font24, WHITE, BLACK);
           Paint_DrawString_EN(30,50,"Asteroids", &Font24, WHITE, BLACK);
-          Paint_DrawString_EN(30, 70, "Mandelbrot", &Font24, WHITE, BLUE);
-
+        //  Paint_DrawString_EN(30, 70, "Mandelbrot", &Font24, WHITE, BLUE);
+          Paint_DrawString_EN(30,90, "Neopixels", &Font24, WHITE, BLACK);
       }
      }
-     /* else if((110>cursorY) && (cursorY>90))
+     else if((110>cursorY) && (cursorY>90))
      {
       if(!((110>cursorYOld) && (cursorYOld>90)))
       {
           Paint_DrawString_EN(10,10,"Etch a sketch", &Font24, WHITE, BLACK);
           Paint_DrawString_EN(30,30,"Pong", &Font24, WHITE, BLACK);
           Paint_DrawString_EN(30,50,"Asteroids", &Font24, WHITE, BLACK);
+      //  Paint_DrawString_EN(30, 70, "Mandelbrot", &Font24, WHITE, BLACK);
+          Paint_DrawString_EN(30,90, "Neopixels", &Font24, WHITE, BLUE);
       }
-     }*/
+     }
   }
-  if(drawMandelbrot)
+  /*if(drawMandelbrot)
   {
     LCD_Clear(0xffff);
     Paint_NewImage(LCD_WIDTH, LCD_HEIGHT, 0, WHITE);
@@ -170,8 +193,8 @@ void loop() //Presents the menu and if 'Mandelbrot' is clicked it starts drawing
     delay(500);//Delay to allow button state to return to not pressed.
     readJoyStickButton();
     drawStartMenu();
-  }
-  if(drawGradient)
+  }*/
+  /*if(drawGradient)
   {
     LCD_Clear(0xffff);
     Paint_NewImage(LCD_WIDTH, LCD_HEIGHT, 0, WHITE);
@@ -182,7 +205,7 @@ void loop() //Presents the menu and if 'Mandelbrot' is clicked it starts drawing
     delay(500);
     readJoyStickButton();
     drawStartMenu();
-  }
+  }*/
   if(etchASketch)
   {
     //bool runEtchASketch{true};
@@ -222,17 +245,48 @@ void loop() //Presents the menu and if 'Mandelbrot' is clicked it starts drawing
     readJoyStickButton();
     drawStartMenu();
   }  
+  if(pixelsOn) {
+    colorWipe(strip.Color(  0,   0, 255), 50); // Blue
+    delay(500);
+    drawStartMenu();
+    //rainbow(10);
+  }
 }
 void drawStartMenu()
 {
   LCD_Clear(0xffff);
   Paint_NewImage(LCD_WIDTH, LCD_HEIGHT, 0, WHITE);
   Paint_Clear(WHITE);
- //Paint_DrawString_EN(30, 10, "Mandelbrot", &Font24, WHITE, BLACK);
-//Paint_DrawString_EN(30,30, "Gradient", &Font24, WHITE, BLACK);
   Paint_DrawString_EN(10,10,"Etch a sketch", &Font24, WHITE, BLACK);
   Paint_DrawString_EN(30,30,"Pong", &Font24, WHITE, BLACK);
   Paint_DrawString_EN(30,50,"Asteroids", &Font24, WHITE, BLACK);
-  Paint_DrawString_EN(30, 70, "Mandelbrot", &Font24, WHITE, BLACK);
+ // Paint_DrawString_EN(30, 70, "Mandelbrot", &Font24, WHITE, BLACK);
+  Paint_DrawString_EN(30,90, "Neopixels", &Font24, WHITE, BLACK);
+
+}
+void rainbow(int wait) {
+  // Hue of first pixel runs 5 complete loops through the color wheel.
+  // Color wheel has a range of 65536 but it's OK if we roll over, so
+  // just count from 0 to 5*65536. Adding 256 to firstPixelHue each time
+  // means we'll make 5*65536/256 = 1280 passes through this loop:
+  for(long firstPixelHue = 0; firstPixelHue < 5*65536; firstPixelHue += 256) {
+    // strip.rainbow() can take a single argument (first pixel hue) or
+    // optionally a few extras: number of rainbow repetitions (default 1),
+    // saturation and value (brightness) (both 0-255, similar to the
+    // ColorHSV() function, default 255), and a true/false flag for whether
+    // to apply gamma correction to provide 'truer' colors (default true).
+    strip.rainbow(firstPixelHue);
+    // Above line is equivalent to:
+    // strip.rainbow(firstPixelHue, 1, 255, 255, true);
+    strip.show(); // Update strip with new contents
+    delay(wait);  // Pause for a moment
+  }
+}
+void colorWipe(uint32_t color, int wait) {
+  for(int i=0; i<strip.numPixels(); i++) { // For each pixel in strip...
+    strip.setPixelColor(i, color);         //  Set pixel's color (in RAM)
+    strip.show();                          //  Update strip to match
+    delay(wait);                           //  Pause for a moment
+  }
 }
 #endif

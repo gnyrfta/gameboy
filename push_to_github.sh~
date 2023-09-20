@@ -1,6 +1,6 @@
 #!/bin/sh
 echo "Attempting to push to Github"
-git push https://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@github.com/gnyrfta/gameboy.git
+git push https://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@github.com/gnyrfta/gameboy.git
 echo "      _____
      |.---.|
      ||___||

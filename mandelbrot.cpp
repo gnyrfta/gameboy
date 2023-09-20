@@ -1,5 +1,8 @@
-/*This file should contain code for mandelbrot program. */
+/*This file contains code for mandelbrot program. 
+Uncomment to use, the Arduino got overloaded. 
+*/
 
+/*
 #include "mandelbrot.h"
 #include "colourconversions.h"
 #include "joystick.h"
@@ -89,4 +92,4 @@ int iterations(Complex c) //Counts iterations until absolute value (modulus) of 
   }
   if (iter == maxIter) return(0);
   else return(iter);
-}
+}*/
