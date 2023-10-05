@@ -26,8 +26,9 @@ In DEV_Config the baud rate is set to 115200 bit/second, so the serial monitor n
 #include "asteroids.h"
 //Neopixel stuffs
 #include <Adafruit_NeoPixel.h>
+#include "pixelmenu.h"
 #define LED_PIN 4
-#define LED_COUNT 10
+#define LED_COUNT 74
 Adafruit_NeoPixel strip(LED_COUNT, LED_PIN, NEO_GRB + NEO_KHZ800);
 
 using namespace std;
@@ -246,8 +247,10 @@ void loop() //Presents the menu and if 'Mandelbrot' is clicked it starts drawing
     drawStartMenu();
   }  
   if(pixelsOn) {
+    runPixels();
     colorWipe(strip.Color(  0,   0, 255), 50); // Blue
-    delay(500);
+    pixelsOn=false;
+    delay(500);//For some reason the menu is drawn twice.
     drawStartMenu();
     //rainbow(10);
   }
