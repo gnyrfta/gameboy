@@ -6,6 +6,9 @@ This code is based off the example LCD code that waveshare distributes with its 
 https://www.waveshare.com/wiki/2.4inch_LCD_Module#Arduino_hardware_connection
 https://www.waveshare.com/wiki/2.4inch_LCD_Module#Arduino_software_description
 
+The 'gameboy' runs an Etch-a-Sketch, a Pong clone and an Asteroids clone and you can also control a strip of Neopixels with it.
+Originally it also ran a program that displayed the Mandelbrot set and continually zoomed in on the border region, but the arduinos memory ran over 100% so had to comment out something.
+
 The mandelbrot code and the functions for colouring the graph are based on Filips program:
 https://github.com/FilipBerglund/Fractals
 Filips program is for c++ and some of the libraries didn't work on arduino, so that makes some parts of the programs 
@@ -31,45 +34,38 @@ In DEV_Config the baud rate is set to 115200 bit/second, so the serial monitor n
   - [X] Add score at end of game.
   - [X] Add second padel
   - [X] Optimize ball speed and padel speed. Redraw only top and bottom pixels of rectangle. Make rectangle thinner. Could be optimized more. 
-  - [ ] Add high score. Is there any way to store this between restarts in Arduino? 
+
   - [X] Increase ball size.
   - [X] Fix bug where there are two padels on one side when moving below the middle. Disappears when returning past middle.
   - [X] Fix collision logic, it bounces off nothing sometimes now. Seems to be fixed. Will reopen if reappears. 
   - [X] Put type conversion into a separate file. 
 
-- [ ] Implement Asteroids clone (of old game from 70:s) :milky_way:
-  - [ ]The shots seem to work now, but the game crashes after a few shots. Should try running with verbose output.
-  - [ ] Detect collision of bullets with asteroid.
-  - [ ] Delete asteroid upon collision.
-  - [ ] Detect collision of ship with asteroid.
-  - [ ] Life minus upon collision.
-  - [ ] Display life as three ships in top left corner.
-  - [ ] Display asteroids destroyed as score.
-  - [ ] Display 'game over' and quit to main menu after delay when ship is destroyed.
-  Weird bug 2 - the game quits quickly when asteroid velocities are randomized in both directions (-4 -> 4). 
+- [X] Implement Asteroids clone (of old game from 70:s) :milky_way:
+  - [X] Detect collision of bullets with asteroid.
+  - [X] Delete asteroid upon collision.
+  - [X] Detect collision of ship with asteroid.
+  - [X] Display asteroids destroyed as score.
+  - [X] Display 'game over' and quit to main menu after delay when ship is destroyed.
+ The Asteroids game isn't completely stable, but leaving it as is. 
   
 
 ### Whenever someone is inspired
-- Build (3D-print?) a holder for the screen. Or use a shoebox.
+- [X] Build (3D-print?) a holder for the screen. Or use a shoebox. Used a shoebox.
 - Screensaver using some of the cool pixel art from that person I follow on Mastodon, if its gpl or so. Thats probably not going to work, since the arduino can't store more than one 70x70 px picture. No memory.
 Maybe with an external SD-card. 
-
-
-Try removing adapter cord and just adding that little metal thing to the cable.
+  - [ ] Add high score. Is there any way to store this between restarts in Arduino? Maybe later. 
+  - [ ] Asteroids - Life minus upon collision. -> You just have one life, decided to simplify it.
+  - [ ] Asteroids - Display life as three ships in top left corner. - Possibly some other time.
 
 Problems asteroids:
-	 Double shots every time the button is pressed and one of the shots gets stuck instead of being erased.
+	 Double shots every time the button is pressed.
 	 Freezes sometimes. Possibly connected to that activeShots outputs a negative number, which it shouldnt.
 	 Probably has to do with the shots, when not shooting the program runs smoothly.
 	 After a hit, activeShots decreases. How can there be a hit when activeShots is -3? 
-	 Asteroids are only partially deleted when hit.
 
-	 One asteroid is fixed in place.
 
 	 The freeze seems to happen sometimes when a shot exits.
 	 Gets stuck in translationMotionShots, when i = 0.
 
-	 Maybe the problem is gone now. Probably not.
 
-	 Start here: print 'game over' and score when collision occurs.
-	 Then start debugging from the top.
+
