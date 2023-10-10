@@ -60,7 +60,6 @@ void loop() //Presents the menu and if 'Mandelbrot' is clicked it starts drawing
   xValue = readJoyStickX();//reads the potentiometer value from the joystick in the x-direction and gives it as an int.
   yValue = readJoyStickY();//reads the potentiometer value from the joystick in the y-direction and gives it as an int.
   setCommand(xValue,yValue);//Sets command to left,right, up or down.
-
   cursorXOld = cursorX; //Used to overwrite former cursor position. 
   cursorYOld = cursorY;
   cursorX = changeCursorXValue(cursorX);//Increments x or y-value of cursor according to 'command'. 
@@ -106,7 +105,7 @@ void loop() //Presents the menu and if 'Mandelbrot' is clicked it starts drawing
       {
         pixelsOn=false;
         Paint_DrawString_EN(30,90, "Neopixels", &Font24, WHITE, BLACK);
-        delay(500);
+        delay(1000);
       }
     }
   }
@@ -237,10 +236,13 @@ void loop() //Presents the menu and if 'Mandelbrot' is clicked it starts drawing
     drawStartMenu();
   }  
   if(pixelsOn) {
+    setCursorSpeed(5);
     runPixels();
     pixelsOn=false;
     delay(500);//For some reason the menu is drawn twice.
+        readJoyStickButton();
     drawStartMenu();
+    setCursorSpeed(3);
     //rainbow(10);
   }
 }
