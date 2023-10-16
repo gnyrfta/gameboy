@@ -64,12 +64,29 @@ void runPixels(){
      if (buttonPressed()) 
   {
     Serial.println("Button press registered");
+    if((130>cursorYPixel) && (cursorYPixel>110))
+    {
+      strip.setBrightness(255);
+    }
+    if((150>cursorYPixel) && (cursorYPixel>130))
+    {
+      Serial.println("lights off.");
+      strip.setBrightness(0);
+      cursorXPixelRed = 0;
+      cursorXPixelGreen = 0;
+      cursorXPixelBlue = 0;
+     // drawPixelMenu();
+      /*Redraw lines.*/
+      //selectingPixels=false;
+     // delay(2000);
+    }
     if((170>cursorYPixel) && (cursorYPixel>150))
     {
       selectingPixels=false;
       Serial.println("should have exited loop");
     }
   }
+
     if(!(cursorXPixel==cursorXOldPixel && cursorYPixel==cursorYOldPixel))
     {
      if((30>cursorYPixel) && (cursorYPixel>10))
@@ -77,11 +94,12 @@ void runPixels(){
         cursorXOldPixelRed = cursorXPixelRed;
         cursorXPixelRed = changeCursorXValue(cursorXPixelRed);
        if(!((30>cursorYOldPixel) && (cursorYOldPixel>10)))
-        {
+      {
           Paint_DrawLine(cursorXPixelRed,10,cursorXPixelRed,30,RED,2, LINE_STYLE_SOLID);
           Paint_DrawLine(cursorXPixelGreen,30,cursorXPixelGreen,50,GREEN,1, LINE_STYLE_SOLID);
           Paint_DrawLine(cursorXPixelBlue,50,cursorXPixelBlue,70,BLUE,1, LINE_STYLE_SOLID);
-
+          cursorXPixel=0;
+          cursorXOldPixel=0;
       }
             Paint_DrawLine(cursorXOldPixelRed,10,cursorXOldPixelRed,30,WHITE,2, LINE_STYLE_SOLID);
             Paint_DrawLine(cursorXPixelRed,10,cursorXPixelRed,30,RED,2, LINE_STYLE_SOLID);
@@ -97,7 +115,8 @@ void runPixels(){
           Paint_DrawLine(cursorXPixelRed,10,cursorXPixelRed,30,RED,1, LINE_STYLE_SOLID);
           Paint_DrawLine(cursorXPixelGreen,30,cursorXPixelGreen,50,GREEN,2, LINE_STYLE_SOLID);
           Paint_DrawLine(cursorXPixelBlue,50,cursorXPixelBlue,70,BLUE,1, LINE_STYLE_SOLID);
-
+          cursorXPixel=0;
+          cursorXOldPixel=0;
       }
             Paint_DrawLine(cursorXOldPixelGreen,30,cursorXOldPixelGreen,50,WHITE,2, LINE_STYLE_SOLID);
             Paint_DrawLine(cursorXPixelGreen,30,cursorXPixelGreen,50,GREEN,2, LINE_STYLE_SOLID);
@@ -113,10 +132,9 @@ void runPixels(){
           Paint_DrawLine(cursorXPixelGreen,30,cursorXPixelGreen,50,WHITE,2, LINE_STYLE_SOLID);
           Paint_DrawLine(cursorXPixelGreen,30,cursorXPixelGreen,50,GREEN,1, LINE_STYLE_SOLID);
           Paint_DrawLine(cursorXPixelBlue,50,cursorXPixelBlue,70,BLUE,2, LINE_STYLE_SOLID);
-         // Paint_DrawLine(cursorXPixelBrightness,70,cursorXPixelBrightness,90,WHITE,2, LINE_STYLE_SOLID);
-         // Paint_DrawLine(cursorXPixelBrightness,70,cursorXPixelBrightness,90,BLACK,1, LINE_STYLE_SOLID);
-
-      }
+          cursorXPixel=0;
+          cursorXOldPixel=0;
+        }
             Paint_DrawLine(cursorXOldPixelBlue,50,cursorXOldPixelBlue,70,WHITE,2, LINE_STYLE_SOLID);
             Paint_DrawLine(cursorXPixelBlue,50,cursorXPixelBlue,70,BLUE,2, LINE_STYLE_SOLID);
      }
@@ -130,9 +148,7 @@ void runPixels(){
           Paint_DrawLine(cursorXPixelGreen,30,cursorXPixelGreen,50,GREEN,1, LINE_STYLE_SOLID);
           Paint_DrawLine(cursorXPixelBlue,50,cursorXPixelBlue,70,WHITE,2, LINE_STYLE_SOLID);
           Paint_DrawLine(cursorXPixelBlue,50,cursorXPixelBlue,70,BLUE,1, LINE_STYLE_SOLID);
-          Paint_DrawString_EN(30,90, "Gradient", &Font24, WHITE, BLACK);
-
-
+         // Paint_DrawString_EN(30,90, "Gradient", &Font24, WHITE, BLACK);
       }
             //Paint_DrawLine(cursorXOldPixelBrightness,70,cursorXOldPixelBrightness,90,WHITE,2, LINE_STYLE_SOLID);
             //Paint_DrawLine(cursorXPixelBrightness,70,cursorXPixelBrightness,90,BLACK,2, LINE_STYLE_SOLID);
@@ -141,7 +157,7 @@ void runPixels(){
      {
       if(!((110>cursorYOldPixel) && (cursorYOldPixel>90)))
       {
-        Paint_DrawString_EN(30,90, "Gradient", &Font24, WHITE, BLUE);
+       // Paint_DrawString_EN(30,90, "Gradient", &Font24, WHITE, BLUE);
        // Paint_DrawLine(cursorXPixelBrightness,70,cursorXPixelBrightness,90,WHITE,2, LINE_STYLE_SOLID);
         //Paint_DrawLine(cursorXPixelBrightness,70,cursorXPixelBrightness,90,BLACK,1, LINE_STYLE_SOLID);
         Paint_DrawString_EN(30,110,"On", &Font24, WHITE, BLACK);
@@ -152,7 +168,7 @@ void runPixels(){
      {
       if(!((130>cursorYOldPixel) && (cursorYOldPixel>110)))
       {
-        Paint_DrawString_EN(30,90, "Gradient", &Font24, WHITE, BLACK);
+       // Paint_DrawString_EN(30,90, "Gradient", &Font24, WHITE, BLACK);
         Paint_DrawString_EN(30,110,"On", &Font24, WHITE, BLUE);
         Paint_DrawString_EN(30,130,"Off", &Font24, WHITE, BLACK);
      }
@@ -185,10 +201,14 @@ void runPixels(){
     colorWipe(strip.Color(red,green,blue), 0);
     }
     else {
-     // Serial.println(xValuePixel);
-/*Serial.println(cursorXPixel);
+   // Serial.println("CursorXPixels");
+    /*Serial.println(cursorXPixelRed);
+     Serial.println(cursorXPixelGreen);
+     Serial.println(cursorXPixelBlue);*/
+     
+    /*Serial.println(cursorXPixel);
     Serial.println(cursorXOldPixel);
-    Serial.println(cursorYPixel);
+    /*Serial.println(cursorYPixel);
     Serial.println(cursorYOldPixel);*/
     }
     
@@ -208,7 +228,7 @@ void drawPixelMenu() {
   Paint_DrawLine(cursorXPixelGreen,30,cursorXPixelGreen,50,GREEN,1, LINE_STYLE_SOLID);
   Paint_DrawLine(cursorXPixelBlue,50,cursorXPixelBlue,70,BLUE,1, LINE_STYLE_SOLID);
  // Paint_DrawLine(cursorXPixelBrightness,70,cursorXPixelBrightness,90,BLACK,1,LINE_STYLE_SOLID);
-  Paint_DrawString_EN(30,90,"Gradient", &Font24, WHITE, BLACK);
+ // Paint_DrawString_EN(30,90,"Gradient", &Font24, WHITE, BLACK);
   Paint_DrawString_EN(30,110,"On", &Font24, WHITE, BLACK);
   Paint_DrawString_EN(30,130,"Off", &Font24, WHITE, BLACK);
   Paint_DrawString_EN(30,150,"Back", &Font24, WHITE, BLACK);
