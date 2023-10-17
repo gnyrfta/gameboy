@@ -9,6 +9,8 @@ Adafruit_NeoPixel strip(LED_COUNT, LED_PIN, NEO_GRB + NEO_KHZ800);
 
 
 bool selectingPixels{true};
+bool sentTurnOffSignal{false};
+bool sentTurnOnSignal{false};
 void drawPixelMenu();
 void rainbow(int wait);
 void colorWipe(uint32_t color, int wait);
@@ -34,7 +36,7 @@ void runPixels(){
   strip.begin();           // INITIALIZE NeoPixel strip object (REQUIRED)
   strip.show();            // Turn OFF all pixels ASAP
   strip.setBrightness(255); // Set BRIGHTNESS to max.  (max = 255)
-    colorWipe(strip.Color(0,0,0), 0);
+  colorWipe(strip.Color(0,0,0), 0);
 
   drawPixelMenu();
   delay(5000);
@@ -57,7 +59,7 @@ void runPixels(){
 
     cursorXOldPixel = cursorXPixel; //Used to overwrite former cursor position. 
     cursorYOldPixel = cursorYPixel;
-    cursorXPixel = changeCursorXValue(cursorXPixel);//Increments x or y-value of cursor according to 'command'. 
+    cursorXPixel = changeCumulativeCursorXValue(cursorXPixel);//Increments x or y-value of cursor according to 'command'. 
     cursorYPixel = changeCursorYValue(cursorYPixel);
     readJoyStickButton();  //bvalue not used currently.
     // Check for button press
@@ -67,14 +69,16 @@ void runPixels(){
     if((130>cursorYPixel) && (cursorYPixel>110))
     {
       strip.setBrightness(255);
+      sentTurnOnSignal = true;
     }
     if((150>cursorYPixel) && (cursorYPixel>130))
     {
       Serial.println("lights off.");
       strip.setBrightness(0);
-      cursorXPixelRed = 0;
+     /* cursorXPixelRed = 0;
       cursorXPixelGreen = 0;
-      cursorXPixelBlue = 0;
+      cursorXPixelBlue = 0;/*/
+      sentTurnOffSignal = true;
      // drawPixelMenu();
       /*Redraw lines.*/
       //selectingPixels=false;
@@ -98,8 +102,8 @@ void runPixels(){
           Paint_DrawLine(cursorXPixelRed,10,cursorXPixelRed,30,RED,2, LINE_STYLE_SOLID);
           Paint_DrawLine(cursorXPixelGreen,30,cursorXPixelGreen,50,GREEN,1, LINE_STYLE_SOLID);
           Paint_DrawLine(cursorXPixelBlue,50,cursorXPixelBlue,70,BLUE,1, LINE_STYLE_SOLID);
-          cursorXPixel=0;
-          cursorXOldPixel=0;
+        //  cursorXPixel=0;
+         // cursorXOldPixel=0;
       }
             Paint_DrawLine(cursorXOldPixelRed,10,cursorXOldPixelRed,30,WHITE,2, LINE_STYLE_SOLID);
             Paint_DrawLine(cursorXPixelRed,10,cursorXPixelRed,30,RED,2, LINE_STYLE_SOLID);
@@ -115,8 +119,8 @@ void runPixels(){
           Paint_DrawLine(cursorXPixelRed,10,cursorXPixelRed,30,RED,1, LINE_STYLE_SOLID);
           Paint_DrawLine(cursorXPixelGreen,30,cursorXPixelGreen,50,GREEN,2, LINE_STYLE_SOLID);
           Paint_DrawLine(cursorXPixelBlue,50,cursorXPixelBlue,70,BLUE,1, LINE_STYLE_SOLID);
-          cursorXPixel=0;
-          cursorXOldPixel=0;
+        //  cursorXPixel=0;
+          //cursorXOldPixel=0;
       }
             Paint_DrawLine(cursorXOldPixelGreen,30,cursorXOldPixelGreen,50,WHITE,2, LINE_STYLE_SOLID);
             Paint_DrawLine(cursorXPixelGreen,30,cursorXPixelGreen,50,GREEN,2, LINE_STYLE_SOLID);
@@ -132,8 +136,8 @@ void runPixels(){
           Paint_DrawLine(cursorXPixelGreen,30,cursorXPixelGreen,50,WHITE,2, LINE_STYLE_SOLID);
           Paint_DrawLine(cursorXPixelGreen,30,cursorXPixelGreen,50,GREEN,1, LINE_STYLE_SOLID);
           Paint_DrawLine(cursorXPixelBlue,50,cursorXPixelBlue,70,BLUE,2, LINE_STYLE_SOLID);
-          cursorXPixel=0;
-          cursorXOldPixel=0;
+         // cursorXPixel=0;
+         // cursorXOldPixel=0;
         }
             Paint_DrawLine(cursorXOldPixelBlue,50,cursorXOldPixelBlue,70,WHITE,2, LINE_STYLE_SOLID);
             Paint_DrawLine(cursorXPixelBlue,50,cursorXPixelBlue,70,BLUE,2, LINE_STYLE_SOLID);
@@ -200,16 +204,27 @@ void runPixels(){
    // strip.setBrightness(255);
     colorWipe(strip.Color(red,green,blue), 0);
     }
-    else {
-   // Serial.println("CursorXPixels");
-    /*Serial.println(cursorXPixelRed);
-     Serial.println(cursorXPixelGreen);
-     Serial.println(cursorXPixelBlue);*/
-     
-    /*Serial.println(cursorXPixel);
-    Serial.println(cursorXOldPixel);
-    /*Serial.println(cursorYPixel);
-    Serial.println(cursorYOldPixel);*/
+    else 
+    {
+      if(sentTurnOffSignal)
+      {
+        red = cursorXPixelRed;
+        green = cursorXPixelGreen;
+        blue = cursorXPixelBlue;
+        colorWipe(strip.Color(red,green,blue), 0);
+        sentTurnOffSignal = false;
+      }
+      else if(sentTurnOnSignal)
+      {
+        red = cursorXPixelRed;
+        green = cursorXPixelGreen;
+        blue = cursorXPixelBlue;
+        colorWipe(strip.Color(red,green,blue), 0);
+        sentTurnOffSignal = false;
+      }
+      Serial.println(cursorXPixelRed);
+      Serial.println(cursorXPixelGreen);
+      Serial.println(cursorXPixelBlue);
     }
     
    // colorWipe(strip.Color(  red,   green, blue), 0);

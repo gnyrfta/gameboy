@@ -5,6 +5,7 @@ void joyStickInit();
 void setCommand(int xValue, int yValue);
 int changeCursorXValue(int cursorX);
 int changeCursorYValue(int cursorY);
+int changeCumulativeCursorXValue(int cursorX);
 int readJoyStickButton();
 bool buttonPressed();
 bool buttonReleased();

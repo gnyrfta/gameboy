@@ -60,6 +60,25 @@ int changeCursorXValue(int cursorX)
   }
   return cursorX;
 }
+int changeCumulativeCursorXValue(int cursorX)
+{
+  if (command & COMMAND_LEFT) {
+   // Serial.println("COMMAND LEFT");
+    if(cursorX > 0 )
+    {
+    cursorX-=cursorSpeed;
+    }
+  }
+
+  if (command & COMMAND_RIGHT) {
+    //Serial.println("COMMAND RIGHT");
+    if(cursorX < 240*3)
+    {
+    cursorX+=cursorSpeed;
+    }
+  }
+  return cursorX;
+}
 int changeCursorYValue(int cursorY)
 {
   if (command & COMMAND_UP) {

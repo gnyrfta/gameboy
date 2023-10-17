@@ -52,12 +52,13 @@ In DEV_Config the baud rate is set to 115200 bit/second, so the serial monitor n
 ### Whenever someone is inspired
 - [X] Build (3D-print?) a holder for the screen. Or use a shoebox. Used a shoebox.
 - Screensaver using some of the cool pixel art from that person I follow on Mastodon, if its gpl or so. Thats probably not going to work, since the arduino can't store more than one 70x70 px picture. No memory.
-Final debug Neopixels
-Colours randomized when moving far to the right with the colours. <- This might be fixed now. cursorXPixel was maxing out at 255. 
-Takes 5-6 presses before 'off' is registered.
-Same for on.
-The cursor moves very slowly up and down.
-Both the menus (main and Neopixel) should not have vertical emptyness. 
+### Final debug Neopixels
+- [X] Colours randomized when moving far to the right with the colours. <- This might be fixed now. cursorXPixel was maxing out at 255. 
+- [X] Takes 5-6 presses before 'off' is registered. <-This is fixed. Wasn't updating the strip until the cursor moved.
+- [X] Same for on. Same as above.
+- [ ] The cursor moves very slowly up and down.
+- [X] Red and green sometimes don't move back after moving forward. Fixed this - cursorXValue was being set to zero and then refusing to go to negative values. 
+- [ ] Both the menus (main and Neopixel) should not have vertical emptyness. 
 Maybe with an external SD-card. 
   - [ ] Add high score. Is there any way to store this between restarts in Arduino? Maybe later. 
   - [ ] Asteroids - Life minus upon collision. -> You just have one life, decided to simplify it.
