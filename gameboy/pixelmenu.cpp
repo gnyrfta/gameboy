@@ -30,7 +30,7 @@ int red{0};
   int cursorXOldPixelBlue{10};
  // int cursorXPixelBrightness{10};
  // int cursorXOldPixelBrightness{10};
-  
+  bool firstTime{true};  
 
 void runPixels(){
   strip.begin();           // INITIALIZE NeoPixel strip object (REQUIRED)
@@ -90,13 +90,19 @@ void runPixels(){
       Serial.println("should have exited loop");
     }
   }
-
+    Serial.println(cursorXPixel);
+    Serial.println(cursorXOldPixel);
     if(!(cursorXPixel==cursorXOldPixel && cursorYPixel==cursorYOldPixel))
     {
      if((30>cursorYPixel) && (cursorYPixel>10))
      {
         cursorXOldPixelRed = cursorXPixelRed;
         cursorXPixelRed = changeCursorXValue(cursorXPixelRed);
+        if(cursorXPixelRed==0)
+        { 
+          cursorXPixel+=getCursorSpeed();
+
+        }
        if(!((30>cursorYOldPixel) && (cursorYOldPixel>10)))
       {
           Paint_DrawLine(cursorXPixelRed,10,cursorXPixelRed,30,RED,2, LINE_STYLE_SOLID);
@@ -113,6 +119,10 @@ void runPixels(){
      {
         cursorXOldPixelGreen = cursorXPixelGreen;
         cursorXPixelGreen = changeCursorXValue(cursorXPixelGreen);
+        if(cursorXPixelGreen==0)
+        { 
+          cursorXPixel+=getCursorSpeed();
+        }
        if(!((50>cursorYOldPixel) && (cursorYOldPixel>30)))
         {
           Paint_DrawLine(cursorXPixelRed,10,cursorXPixelRed,30,WHITE,2, LINE_STYLE_SOLID);
@@ -130,6 +140,10 @@ void runPixels(){
      {
         cursorXOldPixelBlue = cursorXPixelBlue;
         cursorXPixelBlue = changeCursorXValue(cursorXPixelBlue);
+        if(cursorXPixelBlue==0)
+        { 
+          cursorXPixel+=getCursorSpeed();
+        }
        if(!((70>cursorYOldPixel) && (cursorYOldPixel>50)))
         {
           Paint_DrawLine(cursorXPixelRed,10,cursorXPixelRed,30,RED,1, LINE_STYLE_SOLID);
@@ -222,9 +236,10 @@ void runPixels(){
         colorWipe(strip.Color(red,green,blue), 0);
         sentTurnOffSignal = false;
       }
+      /*
       Serial.println(cursorXPixelRed);
       Serial.println(cursorXPixelGreen);
-      Serial.println(cursorXPixelBlue);
+      Serial.println(cursorXPixelBlue);*/
     }
     
    // colorWipe(strip.Color(  red,   green, blue), 0);

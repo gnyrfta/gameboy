@@ -157,6 +157,10 @@ void setCursorSpeed(int speed)
 {
   cursorSpeed = speed;
 }
+int getCursorSpeed()
+{
+  return cursorSpeed;
+}
 void runLoop()
 {
   button.loop();

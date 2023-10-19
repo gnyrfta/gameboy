@@ -16,6 +16,7 @@ void setCursorSpeed(int speed);
 int changeAngle();
 int changeOriginSpeed();
 void runLoop();
+int getCursorSpeed();
 
 
 #endif
