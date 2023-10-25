@@ -17,6 +17,7 @@ kind of different.
 Complex is an arduino library for Complex math. 
 In DEV_Config the baud rate is set to 115200 bit/second, so the serial monitor needs to be set to the same. 
 
+
 ## Todo
 
 ### Menu and fractal program
@@ -50,7 +51,7 @@ In DEV_Config the baud rate is set to 115200 bit/second, so the serial monitor n
   
 
 ### Whenever someone is inspired
-- [X] Build (3D-print?) a holder for the screen. Or use a shoebox. Used a shoebox.
+- [X] Build (3D-print?) a holder for the screen. Or use a shoebox. Used a shoebox. Need a 6x9 cm cardboard-like black piece. Also a 9x9 piece.
 - Screensaver using some of the cool pixel art from that person I follow on Mastodon, if its gpl or so. Thats probably not going to work, since the arduino can't store more than one 70x70 px picture. No memory.
 ### Final debug Neopixels
 - [X] Colours randomized when moving far to the right with the colours. <- This might be fixed now. cursorXPixel was maxing out at 255. 
